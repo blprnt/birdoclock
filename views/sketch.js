@@ -1,3 +1,5 @@
+/* global createCanvas, mouseIsPressed, fill, mouseX, mouseY, ellipse */
+
 function setup() {
   createCanvas(640, 480);
 }
