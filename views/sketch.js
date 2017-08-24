@@ -1,8 +1,8 @@
 /* global createCanvas, mouseIsPressed, fill, mouseX, mouseY, ellipse */
 
 function setup() {
-  createCanvas(1000, 1000);
-  background(0,0,255);
+  createCanvas(500, 1000);
+  background(255,255,255);
 }
 
 
@@ -12,5 +12,9 @@ function draw() {
   } else {
     fill(101, 010, 100);
   }
-  ellipse(mouseX, mouseY, 1, 1);
+  ellipse(100, 200, 40, 40);
+}
+function draw(){
+background(200);
+sphere(50);
 }
