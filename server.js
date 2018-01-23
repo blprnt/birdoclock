@@ -7,8 +7,6 @@ var app = express();
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('views'));
-app.use(express.static('node_modules/p5/lib'));
-app.use(express.static('node_modules/p5/lib/addons'));
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {

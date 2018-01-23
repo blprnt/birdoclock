@@ -1,20 +1,14 @@
-/* global createCanvas, mouseIsPressed, fill, mouseX, mouseY, ellipse */
+
 
 function setup() {
-  createCanvas(500, 1000);
-  background(255,255,255);
+  createCanvas(500, 500);
 }
 
 
 function draw() {
-  if (mouseIsPressed) {
-    fill(3,4,5);
-  } else {
-    fill(101, 010, 100);
-  }
-  ellipse(100, 200, 40, 40);
-}
-function draw(){
-background(200);
-sphere(50);
+  noStroke();
+  fill(255,10);
+  rect(0,0,width,height);
+  stroke(0);
+  line(width/2, height/2, mouseX, mouseY);
 }
