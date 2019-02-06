@@ -2,8 +2,13 @@
 
 function setup() {
   createCanvas(500, 500);
+  loadJSON("https://www.loc.gov/photos/?q=frog&fo=json", dataLoaded);
 }
 
+function dataLoaded(data) {
+  console.log(data);
+  background(255,0,0)
+}
 
 function draw() {
   noStroke();
