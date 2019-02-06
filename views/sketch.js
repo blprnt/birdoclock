@@ -6,14 +6,11 @@ function setup() {
 }
 
 function dataLoaded(data) {
-  console.log(data);
-  background(255,0,0)
   
   var urls = data.results[3].image_url;
   var url = "https:" + urls[urls.length - 1];
   
-  var img = loadImage(url);
-  image(img, 0, 0);
+  var img = createImg(url);
   
   console.log(url);
 }
