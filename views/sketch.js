@@ -14,5 +14,6 @@ function loadData(url) {
 }
 
 function onDataLoaded(data) {
-  console.log(data);
+  var imageURL = data.results[0].image_url;
+  console.log(imageURL);
 }
