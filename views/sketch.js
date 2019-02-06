@@ -9,6 +9,10 @@ function draw() {
 }
 
 function loadData(url) {
-  loadJSON(url);
+  loadJSON(url, onDataLoaded);
   
+}
+
+function onDataLoaded(data) {
+  console.log(data);
 }
