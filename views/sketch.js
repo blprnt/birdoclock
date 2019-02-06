@@ -14,6 +14,8 @@ function loadData(url) {
 }
 
 function onDataLoaded(data) {
-  var imageURL = data.results[0].image_url;
-  console.log(imageURL);
+  var i = floor(random(data.results.length));
+  var imageURLs = data.results[i].image_url;
+  var imageURL = imageURLs[imageURLs.length - 1];
+  var myImg = createImg(imageURL);
 }
