@@ -1,7 +1,9 @@
-var currentURL = "https://www.loc.gov/photos/?q=boy&fo=json";
+var currentURL = "https://www.loc.gov/photos/?dates=1990/1999&q=boy&fo=json";
+var currentYear = 1900;
 
 function setup() {
   createCanvas(500, 500);
+  setTimeURL(currentYear, currentYear + 1);
   loadData();
   setInterval(tick,1000);
 }
@@ -10,8 +12,14 @@ function draw() {
   
 }
 
+function setTimeURL(start, end) {
+  currentURL = "https://www.loc.gov/photos/?dates=" + start + "/" + end + "&q=boy&fo=json";
+}
+
 function tick() {
   loadData();
+  currentYear++;
+  setTimeURL(currentYear, currentYear + 1);
 }
 
 function loadData() {
