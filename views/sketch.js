@@ -1,4 +1,4 @@
-var currentURL = "https://www.loc.gov/photos/?dates=1990/1999&q=boy&fo=json";
+var currentURL = "https://www.loc.gov/photos/?dates=1990/1999&fo=json";
 var currentYear = 1900;
 
 function setup() {
@@ -13,7 +13,7 @@ function draw() {
 }
 
 function setTimeURL(start, end) {
-  currentURL = "https://www.loc.gov/photos/?dates=" + start + "/" + end + "&q=boy&fo=json";
+  currentURL = "https://www.loc.gov/photos/?dates=" + start + "/" + end + "&fo=json";
 }
 
 function tick() {
