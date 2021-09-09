@@ -5,40 +5,54 @@
 <html>
   <head>
     <title>My p5 thing.</title>
-    <meta name="description" content="p5.js CDN Template">
+    <meta name="description" content="p5.js CDN Template" />
     <script src="https://cdn.jsdelivr.net/npm/p5@1.3.0/lib/p5.js"></script>
     <!--script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/addons/p5.dom.js"></script-->
-    <!--script src="/sketch.js"></script-->   
+    <!--script src="/sketch.js"></script-->
   </head>
   <body>
     <header>
       <h1 id="hour">
-        
+        #
       </h1>
       <h1 id="min">
-        
+        #
       </h1>
       <h1 id="sec">
-        
+        #
       </h1>
-    </header>    
-    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>  
-    <script src="https://button.glitch.me/button.js" data-style="glitch"></script>
-    <script> 
+    </header>
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script
+      src="https://button.glitch.me/button.js"
+      data-style="glitch"
+    ></script>
+    <script>
       var lastTime = new Date();
       function changeTime() {
         var now = new Date();
         if (now.getHours() != lastTime.getHours()) {
-          
         }
         if (now.getMinutes() != lastTime.getMinutes()) {
-          
         }
         if (now.getSeconds() != lastTime.getSeconds()) {
-          
+          fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
+            .then(function(response) {
+              // Your code for handling the data you get from the API
+              response.text().then(function(text) {
+                console.log(text);
+                var bj = JSON.parse(text);
+                consol
+                document.getElementById("sec").innerHtml = bj.howMany + " " + bj.comName;
+                
+              });
+            })
+            .catch(function() {
+              // This is where you run code if the server returns any errors
+            });
         }
       }
-      
+
       setInterval(changeTime, 1000);
     </script>
   </body>
