@@ -94,13 +94,21 @@ function fileBirds(birds) {
 }
 
 function getBirdOclock(h, m, s) {
- let hb = rack[h][Math.floor(Math.random() * 100)]; 
- let mb = rack[h][Math.floor(Math.random() * 100)]; 
- let sb = rack[h][Math.floor(Math.random() * 100)]; 
+ let hb = rack[h][Math.floor(Math.random() * rack[h].length)]; 
+ let mb = rack[m][Math.floor(Math.random() * rack[m].length)]; 
+ let sb = rack[s][Math.floor(Math.random() * rack[s].length)]; 
   
  if (hb) console.log(hb.howMany + " " + hb.comName);
   if (mb) console.log(mb.howMany + " " + mb.comName);
   if (sb) console.log(sb.howMany + " " + sb.comName);
+}
+
+function getNow() {
+  var d = new Date();
+  var h = d.getHours();
+  var m = d.getMinutes();
+  var s = d.getSeconds();
+  getBirdOclock(h, m, s);
 }
 
 //buildRack();
@@ -109,4 +117,7 @@ getRecentBirds('US');
 
 getBirdOclock(11,16,48);
 
-setInterval();
+//setInterval(getNow, 1000);
+setInterval(getRecentBirds, 60000); 
+
+
