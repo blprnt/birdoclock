@@ -27,6 +27,8 @@ function buildRack() {
   }
 }
 
+function load
+
 function trimBirds() {
   for(let i = 0; i < 61; i++) {
     rack[i] = rack[i].slice(0,100);
@@ -79,5 +81,6 @@ function fileBirds(birds) {
   saveBirds();
 }
 
-buildRack();
+//buildRack();
+loadRack();
 getRecentBirds('US');
