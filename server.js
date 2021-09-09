@@ -75,7 +75,6 @@ function getRecentBirds(reg) {
   request(options, function(error, response, body) {
     const birds = JSON.parse(body);
     fileBirds(birds);
-    
   })
   
 }
@@ -91,6 +90,15 @@ function fileBirds(birds) {
   console.log("FILED BIRDS.")
   trimBirds();
   saveBirds();
+  
+  let s = "";
+  let ec = 0;
+  for (let i = 0; i < rack.length; i++) {
+    s = s + rack[i].length + "|";
+    ec += (100 - rack[i].length);
+  }
+  console.log(s);
+  console.log("EMPTY:" + ec);
 }
 
 function getBirdOclock(h, m, s) {
@@ -119,5 +127,6 @@ getBirdOclock(11,16,48);
 
 //setInterval(getNow, 1000);
 setInterval(getRecentBirds, 60000); 
+
 
 
