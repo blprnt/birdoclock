@@ -7,16 +7,39 @@
     <title>My p5 thing.</title>
     <meta name="description" content="p5.js CDN Template">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.3.0/lib/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/addons/p5.dom.js"></script>
-    <script src="/sketch.js"></script>   
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/addons/p5.dom.js"></script-->
+    <!--script src="/sketch.js"></script-->   
   </head>
   <body>
     <header>
-      <h1>
-        My p5 thing.
+      <h1 id="hour">
+        
+      </h1>
+      <h1 id="min">
+        
+      </h1>
+      <h1 id="sec">
+        
       </h1>
     </header>    
     <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>  
     <script src="https://button.glitch.me/button.js" data-style="glitch"></script>
+    <script> 
+      var lastTime = new Date();
+      function changeTime() {
+        var now = new Date();
+        if (now.getHours() != lastTime.getHours()) {
+          
+        }
+        if (now.getMinutes() != lastTime.getMinutes()) {
+          
+        }
+        if (now.getSeconds() != lastTime.getSeconds()) {
+          
+        }
+      }
+      
+      setInterval(changeTime, 1000);
+    </script>
   </body>
 </html>
