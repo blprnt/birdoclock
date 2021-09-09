@@ -27,6 +27,7 @@ function buildRack() {
   }
 }
 
+
 function buildMap() {
   for (let i = 0; i < rack.length; i++) {
     for (let j = 0; j < rack[i].length; j++) {
