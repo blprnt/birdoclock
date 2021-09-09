@@ -10,6 +10,7 @@ var fs = require("fs");
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("views"));
 
+
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function() {
   console.log("Your app is listening on port " + listener.address().port);
@@ -21,6 +22,7 @@ let countryCodes = [
 
 let rack = [];
 let obsMap = {};
+let build = true;
 
 function buildRack() {
   for(let i = 0; i < 61; i++) {
@@ -43,6 +45,7 @@ function loadRack() {
     rack = JSON.parse(rawdata);
     buildMap();
     console.log("LOADED RACK");
+    build = false;
   } catch(e) {
     buildRack();
     console.log("BUILDING NEW RACK");
@@ -61,7 +64,6 @@ function saveBirds() {
 }
 
 
-
 function getRecentBirds() {
   
   let reg = "US";
@@ -74,7 +76,8 @@ function getRecentBirds() {
       reg + 
       "/recent" +
       "?back=" +
-      back,
+      back +
+    "&max=100",
     headers: {
       "X-eBirdApiToken": process.env.EBIRDKEY
     }
@@ -84,7 +87,7 @@ function getRecentBirds() {
   console.log(options.url);
   
   request(options, function(error, response, body) {
-    if (error) console.log(err);
+    if (error) console.log(error);
     const birds = JSON.parse(body);
     fileBirds(birds);
   })
