@@ -58,6 +58,7 @@ function trimBirds() {
 function saveBirds() {
   let data = JSON.stringify(rack);
   fs.writeFileSync("data/lastRack.json", data);
+  console.log("Saved birds.");
 }
 
 function getRecentBirds() {
@@ -148,8 +149,8 @@ app.get("/birdNum", (req, res) => {
   res.send(getBirdNum(num));
 });
 
-//buildRack();
-loadRack();
+buildRack();
+//loadRack();
 getRecentBirds("US");
 
 getNow();

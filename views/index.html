@@ -28,7 +28,7 @@
       data-style="glitch"
     ></script>
     <script>
-      var lastTime = new Date();
+      var lastTime = new Date(0);
       function changeTime() {
         var now = new Date();
         if (now.getHours() != lastTime.getHours()) {
@@ -76,6 +76,7 @@
             .catch(function() {
             });
         }
+        lastTime = now;
       }
 
       setInterval(changeTime, 1000);
