@@ -52,8 +52,9 @@ function saveBirds() {
 
 
 
-function getRecentBirds(reg) {
+function getRecentBirds() {
   
+  let reg = "US";
   //https://api.ebird.org/v2/data/obs/{{regionCode}}/recent
   let back = 1;
   var options = {
@@ -73,6 +74,7 @@ function getRecentBirds(reg) {
   console.log(options.url);
   
   request(options, function(error, response, body) {
+    if (error) console.log(err);
     const birds = JSON.parse(body);
     fileBirds(birds);
   })
@@ -87,7 +89,7 @@ function fileBirds(birds) {
       rack[b.howMany].unshift(b);
     }
   }
-  console.log("FILED BIRDS.")
+  console.log("FILED " + birds.length + "BIRDS.")
   trimBirds();
   saveBirds();
   
@@ -127,5 +129,6 @@ getBirdOclock(11,16,48);
 
 //setInterval(getNow, 1000);
 setInterval(getRecentBirds, 60000);
+
 
 
