@@ -32,7 +32,7 @@ function buildRack() {
 
 function buildMap() {
   for (let i = 0; i < rack.length; i++) {
-    for (let j = 0; j < rack[i].length; i++) {
+    for (let j = 0; j < rack[i].length; j++) {
       obsMap[rack[i][j].subId] = true;
     }
   }
@@ -47,6 +47,7 @@ function loadRack() {
     console.log("LOADED RACK");
     build = false;
   } catch(e) {
+    console.log(e);
     buildRack();
     console.log("BUILDING NEW RACK");
   }
@@ -77,15 +78,14 @@ function getRecentBirds() {
       "/recent" +
       "?back=" +
       back +
-    "&max=" + (build ? 100:10000) + 
     "&mess=" + Math.random(),
     headers: {
       "X-eBirdApiToken": process.env.EBIRDKEY
     }
   };
   
-  
   console.log(options.url);
+  
   
   request(options, function(error, response, body) {
     if (error) console.log(error);
