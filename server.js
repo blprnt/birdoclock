@@ -126,7 +126,6 @@ getRecentBirds('US');
 getBirdOclock(11,16,48);
 
 //setInterval(getNow, 1000);
-setInterval(getRecentBirds, 60000); 
-
+setInterval(getRecentBirds, 60000);
 
 
