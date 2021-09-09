@@ -74,12 +74,12 @@ function getRecentBirds() {
       reg + 
       "/recent" +
       "?back=" +
-      back +
-      "&max=100",
+      back,
     headers: {
       "X-eBirdApiToken": process.env.EBIRDKEY
     }
   };
+  
   
   console.log(options.url);
   
@@ -92,6 +92,7 @@ function getRecentBirds() {
 }
 
 function fileBirds(birds) {
+  console.log(birds[0]);
   let fc = 0;
   for(let i = 0; i < birds.length; i++) {
     let b = birds[i];
