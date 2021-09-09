@@ -98,7 +98,6 @@ function getRecentBirds() {
 
 function fileBirds(birds) {
   build = false;
-  console.log(birds[0]);
   let fc = 0;
   for(let i = 0; i < birds.length; i++) {
     let b = birds[i];
@@ -147,7 +146,7 @@ function getNow() {
 loadRack();
 getRecentBirds('US');
 
-getBirdOclock(11,16,48);
+getNow();
 
 //setInterval(getNow, 1000);
 setInterval(getRecentBirds, 60000);
