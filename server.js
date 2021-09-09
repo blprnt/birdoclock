@@ -33,7 +33,7 @@ function buildRack() {
 function buildMap() {
   for (let i = 0; i < rack.length; i++) {
     for (let j = 0; j < rack[i].length; j++) {
-      obsMap[rack[i][j].subId] = true;
+      obsMap[rack[i][j].comName + rack[i][j].locId] = true;
     }
   }
 }
@@ -84,6 +84,7 @@ function getRecentBirds() {
     }
   };
   
+  
   console.log(options.url);
   
   
@@ -103,15 +104,16 @@ function fileBirds(birds) {
     let b = birds[i];
     
     //console.log(b.howMany);
-    if (b.howMany <= 60 && !obsMap[b.subId]) {
+    if (b.howMany <= 60 && !obsMap[b.comName + b.locId]) {
       rack[b.howMany].unshift(b);
-      obsMap[b.subId] = true;
+      obsMap[b.comName + b.locId] = true;
       fc++;
     }
   }
   console.log("FILED " + fc + "BIRDS.")
   trimBirds();
   saveBirds();
+  
   
   let s = "";
   let ec = 0;
