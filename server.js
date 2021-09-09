@@ -18,23 +18,44 @@ let countryCodes = [
   {code:"US",weight:"1"}
 ]
 
-function getRecentBirds() {
+let rack = [];
+
+
+
+function getRecentBirds(reg) {
+  
+  //https://api.ebird.org/v2/data/obs/{{regionCode}}/recent
+  let back = 1;
   var options = {
     method: "GET",
     url:
-      "https://api.ebird.org/v2/data/obs/geo/recent?lat=" +
-      lat +
-      "&lng=" +
-      lon +
-      "&sort=species&dist=" +
-      dist +
-      "&len=1-5" +
-      "&back=" +
-      back +
-      "&hotspot=" +
-      hotspot,
+      "https://api.ebird.org/v2/data/obs/" +
+      reg + 
+      "/recent" +
+      "?back=" +
+      back,
     headers: {
       "X-eBirdApiToken": process.env.EBIRDKEY
     }
   };
+  
+  console.log(options.url);
+  
+  
+  
+  request(options, function(error, response, body) {
+    const birds = JSON.parse(body);
+    fileBirds(birds);
+    
+  })
+  
 }
+
+function fileBirds(birds) {
+  for(let i = 0; i < birds.length; i++) {
+    let b = birds[i];
+    
+  }
+}
+
+getRecentBirds('US');
