@@ -20,10 +20,19 @@ let countryCodes = [
 ]
 
 let rack = [];
+let obsMap = {};
 
 function buildRack() {
   for(let i = 0; i < 61; i++) {
     rack[i] = [];
+  }
+}
+
+function buildMap() {
+  for (let i = 0; i < rack.length; i++) {
+    for (let j = 0; j < rack[i].length; i++) {
+      obsMap[rack[i][j].subId] = true;
+    }
   }
 }
 
@@ -32,6 +41,7 @@ function loadRack() {
   try {
     let rawdata = fs.readFileSync('data/lastRack.json');
     rack = JSON.parse(rawdata);
+    buildMap();
     console.log("LOADED RACK");
   } catch(e) {
     buildRack();
@@ -82,14 +92,18 @@ function getRecentBirds() {
 }
 
 function fileBirds(birds) {
+  let fc = 0;
   for(let i = 0; i < birds.length; i++) {
     let b = birds[i];
+    
     //console.log(b.howMany);
-    if (b.howMany <= 60) {
+    if (b.howMany <= 60 && !obsMap[b.subId]) {
       rack[b.howMany].unshift(b);
+      obsMap[b.subId] = true;
+      fc++;
     }
   }
-  console.log("FILED " + birds.length + "BIRDS.")
+  console.log("FILED " + fc + "BIRDS.")
   trimBirds();
   saveBirds();
   
