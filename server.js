@@ -149,9 +149,10 @@ app.get("/birdNum", (req, res) => {
   res.send(getBirdNum(num));
 });
 
-buildRack();
-//loadRack();
+//buildRack();
+loadRack();
 getRecentBirds("US");
+
 
 getNow();
 
