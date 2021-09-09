@@ -27,7 +27,17 @@ function buildRack() {
   }
 }
 
-function load
+function loadRack() {
+  
+  try {
+    let rawdata = fs.readFileSync('data/lastRack.json');
+    rack = JSON.parse(rawdata);
+    console.log("LOADED RACK");
+  } catch(e) {
+    buildRack();
+    console.log("BUILDING NEW RACK");
+  }
+}
 
 function trimBirds() {
   for(let i = 0; i < 61; i++) {
@@ -53,7 +63,8 @@ function getRecentBirds(reg) {
       reg + 
       "/recent" +
       "?back=" +
-      back,
+      back +
+      "&max=100",
     headers: {
       "X-eBirdApiToken": process.env.EBIRDKEY
     }
@@ -77,10 +88,25 @@ function fileBirds(birds) {
       rack[b.howMany].unshift(b);
     }
   }
+  console.log("FILED BIRDS.")
   trimBirds();
   saveBirds();
+}
+
+function getBirdOclock(h, m, s) {
+ let hb = rack[h][Math.floor(Math.random() * 100)]; 
+ let mb = rack[h][Math.floor(Math.random() * 100)]; 
+ let sb = rack[h][Math.floor(Math.random() * 100)]; 
+  
+ if (hb) console.log(hb.howMany + " " + hb.comName);
+  if (mb) console.log(mb.howMany + " " + mb.comName);
+  if (sb) console.log(sb.howMany + " " + sb.comName);
 }
 
 //buildRack();
 loadRack();
 getRecentBirds('US');
+
+getBirdOclock(11,16,48);
+
+setInterval();
