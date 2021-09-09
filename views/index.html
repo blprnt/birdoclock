@@ -11,17 +11,17 @@
     <!--script src="/sketch.js"></script-->
   </head>
   <body>
-    <header>
+
       <h1 id="hour">
-        #
+        big
       </h1>
       <h1 id="min">
-        #
+        bird
       </h1>
       <h1 id="sec">
-        #
+        test
       </h1>
-    </header>
+
     <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
     <script
       src="https://button.glitch.me/button.js"
@@ -32,23 +32,48 @@
       function changeTime() {
         var now = new Date();
         if (now.getHours() != lastTime.getHours()) {
+          fetch("/birdNum?num=" + now.getHours()) // Call the fetch function passing the url of the API as a parameter
+            .then(function(response) {
+              response.text().then(function(text) {
+                try {
+                  var bj = JSON.parse(text);
+                  document.getElementById("hour").innerHTML = 
+                    bj.howMany + " " + bj.comName;
+                } catch (e) {
+                }
+              });
+            })
+            .catch(function() {
+            });
         }
         if (now.getMinutes() != lastTime.getMinutes()) {
+          fetch("/birdNum?num=" + now.getMinutes()) // Call the fetch function passing the url of the API as a parameter
+            .then(function(response) {
+              response.text().then(function(text) {
+                try {
+                  var bj = JSON.parse(text);
+                  document.getElementById("min").innerHTML = 
+                    bj.howMany + " " + bj.comName;
+                } catch (e) {
+                }
+              });
+            })
+            .catch(function() {
+            });
         }
         if (now.getSeconds() != lastTime.getSeconds()) {
           fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
             .then(function(response) {
-              // Your code for handling the data you get from the API
               response.text().then(function(text) {
-                console.log(text);
-                var bj = JSON.parse(text);
-                consol
-                document.getElementById("sec").innerHtml = bj.howMany + " " + bj.comName;
-                
+                try {
+                  var bj = JSON.parse(text);
+                  document.getElementById("sec").innerHTML = 
+                    bj.howMany + " " + bj.comName;
+                } catch (e) {
+                }
               });
             })
             .catch(function() {
-              // This is where you run code if the server returns any errors
             });
         }
       }
