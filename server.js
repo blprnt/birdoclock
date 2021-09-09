@@ -5,6 +5,7 @@
 var express = require("express");
 var app = express();
 const request = require("request");
+var fs = require("fs");
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("views"));
@@ -19,6 +20,23 @@ let countryCodes = [
 ]
 
 let rack = [];
+
+function buildRack() {
+  for(let i = 0; i < 61; i++) {
+    rack[i] = [];
+  }
+}
+
+function trimBirds() {
+  for(let i = 0; i < 61; i++) {
+    rack[i] = rack[i].slice(0,100);
+  }
+}
+
+function saveBirds() {
+  let data = JSON.stringify(rack);
+  fs.writeFileSync('data/lastRack.json', data);
+}
 
 
 
@@ -41,8 +59,6 @@ function getRecentBirds(reg) {
   
   console.log(options.url);
   
-  
-  
   request(options, function(error, response, body) {
     const birds = JSON.parse(body);
     fileBirds(birds);
@@ -54,8 +70,14 @@ function getRecentBirds(reg) {
 function fileBirds(birds) {
   for(let i = 0; i < birds.length; i++) {
     let b = birds[i];
-    
+    //console.log(b.howMany);
+    if (b.howMany <= 60) {
+      rack[b.howMany].unshift(b);
+    }
   }
+  trimBirds();
+  saveBirds();
 }
 
+buildRack();
 getRecentBirds('US');
