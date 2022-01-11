@@ -6,14 +6,13 @@ var express = require("express");
 var app = express();
 const request = require("request");
 var fs = require("fs");
-const fetch = require('node-fetch2');
-
+const fetch = require("node-fetch2");
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("views"));
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function() {
+var listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
@@ -28,7 +27,6 @@ function buildRack() {
     rack[i] = [];
   }
 }
-
 
 function buildMap() {
   for (let i = 0; i < rack.length; i++) {
@@ -79,13 +77,13 @@ function getRecentBirds() {
       "&mess=" +
       Math.random(),
     headers: {
-      "X-eBirdApiToken": process.env.EBIRDKEY
-    }
+      "X-eBirdApiToken": process.env.EBIRDKEY,
+    },
   };
 
   console.log(options.url);
 
-  request(options, function(error, response, body) {
+  request(options, function (error, response, body) {
     if (error) console.log(error);
     const birds = JSON.parse(body);
     fileBirds(birds);
@@ -120,8 +118,8 @@ function fileBirds(birds) {
 }
 
 function getBirdNum(n) {
-    let nb = rack[n][Math.floor(Math.random() * rack[n].length)];
-    return(nb);
+  let nb = rack[n][Math.floor(Math.random() * rack[n].length)];
+  return nb;
 }
 
 function getBirdOclock(h, m, s) {
@@ -132,10 +130,10 @@ function getBirdOclock(h, m, s) {
   if (hb) console.log(hb.howMany + " " + hb.comName);
   if (mb) console.log(mb.howMany + " " + mb.comName);
   if (sb) console.log(sb.howMany + " " + sb.comName);
-  
+
   let outs = [hb, mb, sb];
-  
-  return(outs);
+
+  return outs;
 }
 
 function getNow() {
@@ -167,30 +165,38 @@ SELECT ?item ?itemLabel ?image ?ebird WHERE {
    }
 }`;
 
-
-class SPARQLQueryDispatcher {
-  constructor(endpoint) {
-    this.endpoint = endpoint;
-  }
-
-  query(sparqlQuery) {
-    console.log(sparqlQuery);
-    const fullUrl = this.endpoint + "?query=" + encodeURIComponent(sparqlQuery);
-    const headers = { 
-      Accept: "application/sparql-results+json" 
-    };
-    
-    console.log(fullUrl);
-
-    fetch(fullUrl, { headers })
-    .then(res => res.json())
-    .then(json => console.log(json));
+function checkStatus(res) {
+  console.log(res);
+  if (res.ok) {
+    // res.status >= 200 && res.status < 300
+    return res;
+  } else {
+    //throw MyCustomError(res.statusText);
   }
 }
 
-
-
 function getWikiData(_bird, lang) {
+  let ep = sparqlQuery
+    .replace("{{birdlist}}", _bird)
+    .replace("{{lang}}", '"' + lang + '"');
+
+  const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+  const headers = {
+    Accept: "application/sparql-results+json",
+  };
+  
+  console.log(fullUrl);
+  
+  var options = {
+    method: "GET",
+    url: fullUrl,
+    headers: headers
+  };
+  
+  console.log(options.url);
+
+  request(options).pipe(res);
+  /*
 
   //Get common names(translated) and images from wikidata
   const queryDispatcher = new SPARQLQueryDispatcher(endpointUrl);
@@ -211,13 +217,10 @@ function getWikiData(_bird, lang) {
         console.log("WIKI BIRD:" + bname + ":" + bimg );
       });
     });
+    */
 }
 
 getWikiData("rocpig", "en");
-
-
-
-
 
 //----------------------------------------------
 
@@ -231,9 +234,7 @@ app.get("/birdNum", (req, res) => {
 loadRack();
 getRecentBirds("US");
 
-
 getNow();
 
 //setInterval(getNow, 1000);
 setInterval(getRecentBirds, 60000);
-
