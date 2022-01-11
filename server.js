@@ -146,7 +146,12 @@ function getBirdNum(n) {
   console.log("GET BIRD NUM:" + nb.speciesCode + ":" + imageSet[nb.speciesCode])
   if (nb && imageSet[nb.speciesCode]) {
     console.log("APPEND IMAGE")
-    nb.image = imageSet[nb.speciesCode].image;
+    let img = imageSet[nb.speciesCode].image;
+    let w = 250;
+    nb.image = img.replace(
+          "http://commons.wikimedia.org/wiki/Special:FilePath/",
+          "https://commons.wikimedia.org/w/thumb.php?width=" + w + "&height=" + h + "&f="
+        );
   }
   }
   return nb;
