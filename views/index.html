@@ -21,7 +21,7 @@
         font-size: 1rem;
         white-space: nowrap;
         font-family: arial, sans-serif;
-        padding:0.5em;
+        margin:10em;
       }
 
       .tick-flip,
@@ -88,6 +88,10 @@
       .tick-flip {
         border-radius: 0.05em !important;
         height: 3em;
+      }
+      
+      .species {
+        
       }
     </style>
 
@@ -190,6 +194,18 @@
                         "style",
                         "background-image: url('" + bj.image + "')"
                       );
+                  
+                  var b = document
+                    .querySelector("#secs")
+                    .querySelector(".tick-flip-back");
+                  
+                  const newDiv = document.createElement("div");
+                  newDiv.addClass("species");
+                  const newContent = document.createTextNode(bj.comName);
+                  newDiv.appendChild(newContent);
+                  
+                  b.innerHTML = "";
+                  b.appendChild(newDiv);
 
                 } catch (e) {}
               });
