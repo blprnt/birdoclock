@@ -73,6 +73,12 @@ function saveBirds() {
   console.log("Saved birds.");
 }
 
+function saveBirds() {
+  let data = JSON.stringify(imageSet);
+  fs.writeFileSync("data/birdImages.json", data);
+  console.log("Saved bird images.");
+}
+
 function getRecentBirds() {
   let reg = "US";
   //https://api.ebird.org/v2/data/obs/{{regionCode}}/recent
@@ -157,7 +163,8 @@ function getNow() {
 
 function processImageQ() {
   if (imageQ.length > 0) {
-    var b = imageQ.
+    var b = imageQ.shift();
+    getWikiData(b, "en");
   }
 }
 
@@ -193,18 +200,20 @@ function checkStatus(res) {
 }
 
 function getWikiData(_bird, lang) {
+  
+  console.log("GET WIKI DATA FOR : " + _bird);
   let ep = sparqlQuery
     .replace("{{birdlist}}", '"' + _bird + '"')
     .replace("{{lang}}", '"' + lang + '"');
 
-  const fullUrl = endpointUrl + "?query=" + encodeURIComponent(ep);
+  const fullUrl = endpointUrl + "?query=" + encodeURIComponent(ep) + "&format=json";
   const headers = {
     Accept: "application/sparql-results+json",
     "User-Agent": "BirdClock/0.0 (https://bird-oclock.glitch.me/; blprnt@blprnt.com)"
 
   };
   
-  console.log(fullUrl);
+  //console.log(fullUrl);
   
   var options = {
     method: "GET",
@@ -212,10 +221,16 @@ function getWikiData(_bird, lang) {
     headers: headers
   };
   
-  console.log(options.url);
+  //console.log(options.url);
 
   request(options, function(error, reponse, body) {
-    console.log(body);
+    //console.log(body);
+    var j = JSON.parse(body);
+    var b = j.results.bindings[0]["ebird"].value;
+    var img = j.results.bindings[0]["image"].value;
+    imageSet[b] = {"image":img};
+    saveImages();
+    
   });
   /*
 
@@ -241,7 +256,7 @@ function getWikiData(_bird, lang) {
     */
 }
 
-getWikiData("rocpig", "en");
+imageQ.push("rocpig");
 
 //----------------------------------------------
 
