@@ -145,6 +145,7 @@ function getBirdNum(n) {
   if (nb) {
   console.log("GET BIRD NUM:" + nb.speciesCode + ":" + imageSet[nb.speciesCode])
   if (nb && imageSet[nb.speciesCode]) {
+    
     console.log("APPEND IMAGE")
     let img = imageSet[nb.speciesCode].image;
     let w = 250;
