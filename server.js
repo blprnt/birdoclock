@@ -141,6 +141,9 @@ function fileBirds(birds) {
 
 function getBirdNum(n) {
   let nb = rack[n][Math.floor(Math.random() * rack[n].length)];
+  if (nb && imageQ[nb.speciesCode]) {
+    nb.image = imageQ[nb.speciesCode].image;
+  }
   return nb;
 }
 
@@ -230,12 +233,13 @@ function getWikiData(_bird, lang) {
 
   request(options, function(error, reponse, body) {
     //console.log(body);
-     try {
+    try {
     var j = JSON.parse(body);
     var b = j.results.bindings[0]["ebird"].value;
     var img = j.results.bindings[0]["image"].value;
     imageSet[b] = {"image":img};
-    saveBirdImages();} catch () {
+    saveBirdImages();
+    } catch(e) {
       
     }
     

@@ -67,8 +67,9 @@
               response.text().then(function(text) {
                 try {
                   var bj = JSON.parse(text);
+                  console.log(bj);
                   document.getElementById("sec").innerHTML = 
-                    bj.howMany + " " + bj.comName;
+                    bj.howMany + " " + bj.comName + "<img src='" + bj.image + "'>";
                 } catch (e) {
                 }
               });
