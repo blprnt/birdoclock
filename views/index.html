@@ -107,7 +107,7 @@
         <span data-view="text" data-key="sep" class="tick-text-inline"></span>
 
         <span
-          id="secs"
+          class="minpanel"
           data-key="seconds"
           data-transform="pad(00)"
           data-view="flip"
@@ -167,9 +167,9 @@
                   var bj = JSON.parse(text);
                   console.log(bj);
                   
-                  var e = document.querySelector(".tick-flip-panel-front");
+                  var e = document.querySelector(".minpanel.tick-flip-panel-front");
                   console.log(e);
-                  e.setAttribute("background-image", "url('" + bj.image + "')");
+                  e.setAttribute("style", "background-image: url('" + bj.image + "')");
                 
                 } catch (e) {}
               });
