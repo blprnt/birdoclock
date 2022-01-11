@@ -150,7 +150,7 @@ function getBirdNum(n) {
     let w = 250;
     nb.image = img.replace(
           "http://commons.wikimedia.org/wiki/Special:FilePath/",
-          "https://commons.wikimedia.org/w/thumb.php?width=" + w + "&height=" + h + "&f="
+          "https://commons.wikimedia.org/w/thumb.php?width=" + w + "&f="
         );
   }
   }
