@@ -10,7 +10,7 @@
     "express": "^4.14.0",
     "request": "^2.88.2",
     "fs": "^0.0.2",
-    "node-fetch": "^3.1.0"
+    "node-fetch2": "^1.6.3"
   },
   "engines": {
     "node": "6.9.1"

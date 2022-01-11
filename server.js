@@ -6,6 +6,8 @@ var express = require("express");
 var app = express();
 const request = require("request");
 var fs = require("fs");
+const fetch = require('node-fetch2');
+
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("views"));
@@ -177,8 +179,12 @@ class SPARQLQueryDispatcher {
     const headers = { 
       Accept: "application/sparql-results+json" 
     };
+    
+    console.log(fullUrl);
 
-    return fetch(fullUrl, { headers }).then(body => body.json());
+    fetch(fullUrl, { headers })
+    .then(res => res.json())
+    .then(json => console.log(json));
   }
 }
 
