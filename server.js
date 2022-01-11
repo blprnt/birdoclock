@@ -19,6 +19,8 @@ var listener = app.listen(process.env.PORT, function () {
 let countryCodes = [{ code: "US", weight: "1" }];
 
 let rack = [];
+let imageSet = {};
+let imageQ = [];
 let obsMap = {};
 let build = true;
 
@@ -48,6 +50,15 @@ function loadRack() {
     buildRack();
     console.log("BUILDING NEW RACK");
   }
+}
+
+function loadBirdImages() {
+  try {
+    let rawdata = fs.readFileSync("data/birdImages.json");
+    imageSet = JSON.parse(rawdata);
+    console.log("LOADED BIRD IMAGES");
+  } catch (e) {
+    console.log(e);  }
 }
 
 function trimBirds() {
@@ -144,6 +155,12 @@ function getNow() {
   return getBirdOclock(h, m, s);
 }
 
+function processImageQ() {
+  if (imageQ.length > 0) {
+    var b = imageQ.
+  }
+}
+
 //WIKIDATA--------------------------------------
 
 const endpointUrl = "https://query.wikidata.org/sparql";
@@ -236,9 +253,11 @@ app.get("/birdNum", (req, res) => {
 
 //buildRack();
 loadRack();
+loadBirdImages();
 getRecentBirds("US");
 
 getNow();
 
 //setInterval(getNow, 1000);
 setInterval(getRecentBirds, 60000);
+setInterval(processImageQ, 1000);
