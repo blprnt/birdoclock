@@ -33,6 +33,11 @@ function buildRack() {
 function buildMap() {
   for (let i = 0; i < rack.length; i++) {
     for (let j = 0; j < rack[i].length; j++) {
+      let sn = rack[i][j].speciesCode;
+      if (!imageSet[sn] && imageQ.indexOf(sn) == -1) {
+        console.log(sn);
+        imageQ.push(sn);
+      }
       obsMap[rack[i][j].comName + rack[i][j].locId] = true;
     }
   }
@@ -56,7 +61,7 @@ function loadBirdImages() {
   try {
     let rawdata = fs.readFileSync("data/birdImages.json");
     imageSet = JSON.parse(rawdata);
-    console.log("LOADED BIRD IMAGES");
+    console.log(imageSet);
   } catch (e) {
     console.log(e);  }
 }
@@ -73,7 +78,7 @@ function saveBirds() {
   console.log("Saved birds.");
 }
 
-function saveBirds() {
+function saveBirdImages() {
   let data = JSON.stringify(imageSet);
   fs.writeFileSync("data/birdImages.json", data);
   console.log("Saved bird images.");
@@ -225,11 +230,14 @@ function getWikiData(_bird, lang) {
 
   request(options, function(error, reponse, body) {
     //console.log(body);
+     try {
     var j = JSON.parse(body);
     var b = j.results.bindings[0]["ebird"].value;
     var img = j.results.bindings[0]["image"].value;
     imageSet[b] = {"image":img};
-    saveImages();
+    saveBirdImages();} catch () {
+      
+    }
     
   });
   /*
@@ -256,7 +264,6 @@ function getWikiData(_bird, lang) {
     */
 }
 
-imageQ.push("rocpig");
 
 //----------------------------------------------
 
@@ -267,8 +274,8 @@ app.get("/birdNum", (req, res) => {
 });
 
 //buildRack();
-loadRack();
 loadBirdImages();
+loadRack();
 getRecentBirds("US");
 
 getNow();
