@@ -144,6 +144,77 @@ function getNow() {
   return getBirdOclock(h, m, s);
 }
 
+//WIKIDATA--------------------------------------
+
+const endpointUrl = "https://query.wikidata.org/sparql";
+let sparqlQuery = `PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX wd: <http://www.wikidata.org/entity/> 
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX p: <http://www.wikidata.org/prop/>
+PREFIX v: <http://www.wikidata.org/prop/statement/>
+
+SELECT ?item ?itemLabel ?image ?ebird WHERE {
+  VALUES ?BIRDS { {{birdlist}} }
+  ?item wdt:P3444 ?BIRDS.
+  
+  OPTIONAL {?item wdt:P18 ?image.}
+  OPTIONAL {?item wdt:P3444 ?ebird.}
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language {{lang}} .
+   }
+}`;
+
+
+class SPARQLQueryDispatcher {
+  constructor(endpoint) {
+    this.endpoint = endpoint;
+  }
+
+  query(sparqlQuery) {
+    console.log(sparqlQuery);
+    const fullUrl = this.endpoint + "?query=" + encodeURIComponent(sparqlQuery);
+    const headers = { 
+      Accept: "application/sparql-results+json" 
+    };
+
+    return fetch(fullUrl, { headers }).then(body => body.json());
+  }
+}
+
+
+
+function getWikiData(_bird, lang) {
+
+  //Get common names(translated) and images from wikidata
+  const queryDispatcher = new SPARQLQueryDispatcher(endpointUrl);
+  queryDispatcher
+    .query(
+      sparqlQuery
+        .replace("{{birdlist}}", _bird)
+        .replace("{{lang}}", '"' + lang + '"')
+    )
+    .then(wikis => {
+      console.log(wikis);
+      let blist = wikis.results.bindings;
+      blist.forEach(b => {
+        //let bird = birdMap[b.ebird.value];
+        let bname = b.itemLabel.value;
+        let bimg;
+        if (b.image) bimg = b.image.value;
+        console.log("WIKI BIRD:" + bname + ":" + bimg );
+      });
+    });
+}
+
+getWikiData("rocpig", "en");
+
+
+
+
+
+//----------------------------------------------
+
 //API Stuff
 app.get("/birdNum", (req, res) => {
   var num = req.query.num;
@@ -159,3 +230,4 @@ getNow();
 
 //setInterval(getNow, 1000);
 setInterval(getRecentBirds, 60000);
+
