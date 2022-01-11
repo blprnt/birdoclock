@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My p5 thing.</title>
+    <title>It's Bird O'Clock!</title>
     <meta name="description" content="p5.js CDN Template" />
     <link
       href="https://unpkg.com/@pqina/flip/dist/flip.min.css"
@@ -167,7 +167,7 @@
                   var bj = JSON.parse(text);
                   console.log(bj);
                   
-                  document.querySelectorAll(".secspanel.tick-flip-panel-front").forEach(function(e) {
+                  document.querySelectorAll(".tick-flip-panel-front").forEach(function(e) {
                     console.log(e);
                     e.setAttribute("style", "background-image: url('" + bj.image + "')");
                   });
