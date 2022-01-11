@@ -65,7 +65,7 @@
       }
 
       .tick-flip-panel {
-        color: rgb(255,255,255) !important;
+        color: rgb(255, 255, 255) !important;
       }
 
       .tick-flip {
@@ -78,9 +78,8 @@
 
       .tick-flip-panel {
         background-color: rgb(159, 61, 59) !important;
-        
       }
-      
+
       .tick-flip-panel-front {
         background-size: cover;
       }
@@ -93,7 +92,12 @@
 
     <div class="tick" data-did-init="handleTickInit">
       <div data-layout="horizontal fit">
-        <span id="hours" data-key="hours" data-transform="pad(00)" data-view="flip"></span>
+        <span
+          id="hours"
+          data-key="hours"
+          data-transform="pad(00)"
+          data-view="flip"
+        ></span>
 
         <span data-view="text" data-key="sep" class="tick-text-inline"></span>
 
@@ -104,14 +108,15 @@
           data-view="flip"
         ></span>
 
-        <span data-view="text" data-key="sep" class="tick-text-inline"></span>
+        <div class="secs">
+          <span data-view="text" data-key="sep" class="tick-text-inline"></span>
 
-        <span
-          class="secspanel"
-          data-key="seconds"
-          data-transform="pad(00)"
-          data-view="flip"
-        ></span>
+          <span
+            data-key="seconds"
+            data-transform="pad(00)"
+            data-view="flip"
+          ></span>
+        </div>
       </div>
     </div>
     <script>
@@ -166,13 +171,16 @@
                 try {
                   var bj = JSON.parse(text);
                   console.log(bj);
-                  
-                  document.querySelectorAll(".tick-flip-panel-front").forEach(function(e) {
-                    console.log(e);
-                    e.setAttribute("style", "background-image: url('" + bj.image + "')");
-                  });
-                  
-                
+
+                  document
+                    .querySelectorAll(".secs.tick-flip-panel-front")
+                    .forEach(function (e) {
+                      console.log(e);
+                      e.setAttribute(
+                        "style",
+                        "background-image: url('" + bj.image + "')"
+                      );
+                    });
                 } catch (e) {}
               });
             })
