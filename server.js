@@ -183,6 +183,8 @@ function getWikiData(_bird, lang) {
   const fullUrl = endpointUrl + "?query=" + encodeURIComponent(ep);
   const headers = {
     Accept: "application/sparql-results+json",
+    "User-Agent": "BirdClock/0.0 (https://bird-oclock.glitch.me/; blprnt@blprnt.com)"
+
   };
   
   console.log(fullUrl);
@@ -196,7 +198,7 @@ function getWikiData(_bird, lang) {
   console.log(options.url);
 
   request(options, function(error, reponse, body) {
-    console.log(error);
+    console.log(body);
   });
   /*
 

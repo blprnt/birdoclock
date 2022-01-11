@@ -13,7 +13,7 @@
     "node-fetch2": "^1.6.3"
   },
   "engines": {
-    "node": "6.9.1"
+    "node": "12.22.9"
   },
   "keywords": [
     "node",
