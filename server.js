@@ -177,10 +177,10 @@ function checkStatus(res) {
 
 function getWikiData(_bird, lang) {
   let ep = sparqlQuery
-    .replace("{{birdlist}}", _bird)
+    .replace("{{birdlist}}", '"' + _bird + '"')
     .replace("{{lang}}", '"' + lang + '"');
 
-  const fullUrl = endpointUrl + "?query=" + encodeURIComponent(sparqlQuery);
+  const fullUrl = endpointUrl + "?query=" + encodeURIComponent(ep);
   const headers = {
     Accept: "application/sparql-results+json",
   };
@@ -195,7 +195,9 @@ function getWikiData(_bird, lang) {
   
   console.log(options.url);
 
-  request(options).pipe(res);
+  request(options, function(error, reponse, body) {
+    console.log(error);
+  });
   /*
 
   //Get common names(translated) and images from wikidata
