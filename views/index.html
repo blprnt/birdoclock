@@ -91,7 +91,7 @@
       }
       
       .species {
-        
+        background-color: pink;
       }
     </style>
 
@@ -148,13 +148,7 @@
               response.text().then(function (text) {
                 try {
                   var bj = JSON.parse(text);
-                  document
-                    .querySelector("#hours")
-                    .querySelector(".tick-flip-panel-front")
-                    .setAttribute(
-                        "style",
-                        "background-image: url('" + bj.image + "')"
-                      );
+                  placeBird("hours", bj);
                 } catch (e) {}
               });
             })
@@ -166,14 +160,7 @@
               response.text().then(function (text) {
                 try {
                   var bj = JSON.parse(text);
-                  
-                  document
-                    .querySelector("#mins")
-                    .querySelector(".tick-flip-panel-front")
-                    .setAttribute(
-                        "style",
-                        "background-image: url('" + bj.image + "')"
-                      );
+                  placeBird("mins", bj);
                   
                 } catch (e) {}
               });
@@ -186,26 +173,7 @@
               response.text().then(function (text) {
                 try {
                   var bj = JSON.parse(text);
-
-                  document
-                    .querySelector("#secs")
-                    .querySelector(".tick-flip-panel-front")
-                    .setAttribute(
-                        "style",
-                        "background-image: url('" + bj.image + "')"
-                      );
-                  
-                  var b = document
-                    .querySelector("#secs")
-                    .querySelector(".tick-flip-back");
-                  
-                  const newDiv = document.createElement("div");
-                  newDiv.addClass("species");
-                  const newContent = document.createTextNode(bj.comName);
-                  newDiv.appendChild(newContent);
-                  
-                  b.innerHTML = "";
-                  b.appendChild(newDiv);
+                  placeBird("secs", bj);
 
                 } catch (e) {}
               });
@@ -213,6 +181,30 @@
             .catch(function () {});
         }
         lastTime = now;
+      }
+      
+      function placeBird(section, bird) {
+        
+
+            document
+              .querySelector("#" + section)
+              .querySelector(".tick-flip-panel-front")
+              .setAttribute(
+                  "style",
+                  "background-image: url('" + bird.image + "')"
+                );
+
+            var b = document
+              .querySelector("#" + section)
+              .querySelector(".tick-flip-panel-back-text");
+
+            const newDiv = document.createElement("div");
+            newDiv.addClass("species");
+            const newContent = document.createTextNode(bird.comName);
+            newDiv.appendChild(newContent);
+
+            b.innerHTML = "";
+            b.appendChild(newDiv);
       }
 
       setInterval(changeTime, 1000);
