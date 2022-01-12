@@ -91,12 +91,12 @@
       }
       
       .species {
-        padding-right:0.25em;
-        padding-left:0.25em;
+        margin-right:0.25em;
+        margin-left:0.25em;
         margin-top:1em;
         margin-left:-0.5em;
         white-space: normal;
-        font-size:0.25em !important;
+        font-size:0.2em !important;
         letter-spacing:0em !important;
         color:white;
       }
@@ -107,7 +107,6 @@
         <span
           id="hours"
           data-key="hours"
-          data-transform="pad(00)"
           data-view="flip"
         ></span>
 
@@ -115,7 +114,6 @@
         <span
           id="mins"
           data-key="minutes"
-          data-transform="pad(00)"
           data-view="flip"
         ></span>
 
@@ -136,8 +134,8 @@
           var d = Tick.helper.date();
           tick.value = {
             sep: ".",
-            hours: d.getHours(),
-            minutes: d.getMinutes(),
+            hours: d.getHours() < 10 ? "0" + d.getHours():d.getHours(),
+            minutes: d.getMinutes() < 10 ? "0" + d.getMinutes():d.getMinutes(),
             seconds: d.getSeconds() < 10 ? "0" + d.getSeconds():d.getSeconds(),
           };
         });
