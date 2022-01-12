@@ -91,9 +91,11 @@
       }
       
       .species {
+        padding-right:0.25em;
+        padding-left:0.25em;
+        margin-top:1em;
+        margin-left:-0.5em;
         white-space: normal;
-        overflow:hidden;
-        overflow-wrap: break-word !important;
         font-size:0.25em !important;
         letter-spacing:0em !important;
         color:white;
@@ -218,7 +220,7 @@
 
             var b = document
               .querySelector("#" + section)
-              .querySelector(".tick-flip-back");
+              .querySelectorAll(".tick-flip-back")[1];
          
 
             const newDiv = document.createElement("div");
