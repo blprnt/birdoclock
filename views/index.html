@@ -91,10 +91,12 @@
       }
       
       .species {
-        
-        overflow-wrap: break-word; !important
-        font-size:0.25em; !important
-        letter-spacing:0em; !important
+        white-space: normal;
+        overflow:hidden;
+        overflow-wrap: break-word !important;
+        font-size:0.25em !important;
+        letter-spacing:0em !important;
+        color:white;
       }
     </style>
 
@@ -205,8 +207,7 @@
       }
       
       function placeBird(section, bird) {
-        
-
+      
             document
               .querySelector("#" + section)
               .querySelector(".tick-flip-panel-front")
