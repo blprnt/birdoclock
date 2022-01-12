@@ -79,7 +79,7 @@ function loadBirdImages() {
 
 function trimBirds() {
   for (let i = 0; i < 61; i++) {
-    rack[i] = rack[i].slice(0, 100);
+    rack[i] = rack[i].slice(0, 10);
   }
 }
 

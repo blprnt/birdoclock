@@ -215,14 +215,20 @@
 
             var b = document
               .querySelector("#" + section)
-              .querySelector(".tick-flip-panel-back-text");
+              .querySelector(".tick-flip-panel-back-highlight");
+         
+            console.log("APENDEE:" + b);
 
             const newDiv = document.createElement("div");
-            newDiv.addClass("species");
-            const newContent = document.createTextNode(bird.comName);
+            
+            newDiv.classList.add("species");
+            console.log("APENDOR:" + newDiv);
+            const newContent = document.createTextNode("WHASURP");
             newDiv.appendChild(newContent);
+        
+            
 
-            b.innerHTML = "";
+            //b.innerHTML = "";
             b.appendChild(newDiv);
       }
 
