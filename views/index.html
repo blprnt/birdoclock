@@ -19,7 +19,6 @@
     <style>
       .tick {
         font-size: 1rem;
-        white-space: nowrap;
         font-family: arial, sans-serif;
         margin:10em;
       }
@@ -42,6 +41,7 @@
         display: inline-block;
         text-align: center;
         min-width: 1em;
+        
       }
 
       .tick-text-inline + .tick-text-inline {
@@ -91,15 +91,10 @@
       }
       
       .species {
-        display: inline-block;
-        word-break: break-word;
         
-        font-size:0.25em;
-        height:100%;
-        width:150px;
-        background-color: pink;
-        color:black;
-        
+        overflow-wrap: break-word; !important
+        font-size:0.25em; !important
+        letter-spacing:0em; !important
       }
     </style>
 
