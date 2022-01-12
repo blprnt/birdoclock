@@ -17,8 +17,17 @@ var listener = app.listen(process.env.PORT, function () {
 });
 
 let countryCodes = [
-  { code: "US", weight: "1" }
+  { code: "US", weight: "1" },
+  { code: "CA", weight: "1" },
+  { code: "IN", weight: "1" },
+  { code: "AU", weight: "1" },
+  { code: "BR", weight: "1" },
+  { code: "GB", weight: "1" },
+  { code: "TW", weight: "1" },
+  { code: "MX", weight: "1" }
 ];
+
+let countryIndex = 0;
 
 let rack = [];
 let imageSet = {};
@@ -87,7 +96,10 @@ function saveBirdImages() {
 }
 
 function getRecentBirds() {
-  let reg = "IN";
+  //let reg = "IN";
+  let reg = countryCodes[countryIndex].code;
+  countryIndex++;
+  if (countryIndex == countryCodes.length) countryIndex = 0;
   //https://api.ebird.org/v2/data/obs/{{regionCode}}/recent
   let back = 1;
   var options = {
@@ -121,7 +133,7 @@ function fileBirds(birds) {
     let b = birds[i];
 
     //console.log(b.howMany);
-    if (b.howMany <= 60 && !obsMap[b.comName + b.locId]) {
+    if (b.howMany <= 60 && !obsMap[b.comName + b.locId] && b.comName.indexOf('x') != 0) { //eliminate hybrids
       rack[b.howMany].unshift(b);
       obsMap[b.comName + b.locId] = true;
       fc++;
@@ -293,7 +305,7 @@ app.get("/birdNum", (req, res) => {
 //buildRack();
 loadBirdImages();
 loadRack();
-getRecentBirds("US");
+getRecentBirds();
 
 getNow();
 
