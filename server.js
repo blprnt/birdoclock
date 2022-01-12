@@ -95,6 +95,7 @@ function saveBirdImages() {
   console.log("Saved bird images.");
 }
 
+
 function getRecentBirds() {
   //let reg = "IN";
   let reg = countryCodes[countryIndex].code;
@@ -147,7 +148,7 @@ function fileBirds(birds) {
   let ec = 0;
   for (let i = 0; i < rack.length; i++) {
     s = s + rack[i].length + "|";
-    ec += 100 - rack[i].length;
+    ec += 10 - rack[i].length;
   }
   console.log(s);
   console.log("EMPTY:" + ec);
@@ -157,10 +158,10 @@ function getBirdNum(n) {
   
   let nb = rack[n][Math.floor(Math.random() * rack[n].length)];
   if (nb) {
-  console.log("GET BIRD NUM:" + nb.speciesCode + ":" + imageSet[nb.speciesCode])
+  //console.log("GET BIRD NUM:" + nb.speciesCode + ":" + imageSet[nb.speciesCode])
   if (nb && imageSet[nb.speciesCode]) {
     
-    console.log("APPEND IMAGE")
+    //console.log("APPEND IMAGE")
     let img = imageSet[nb.speciesCode].image;
     let w = 250;
     nb.image = img.replace(
