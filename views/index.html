@@ -129,8 +129,10 @@
     </div>
     <script>
       function handleTickInit(tick) {
+        
         // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
+          changeTime();
           var d = Tick.helper.date();
           tick.value = {
             sep: ".",
@@ -140,13 +142,10 @@
           };
         });
       }
-    </script>
-
-    <script>
+  
       var lastTime = new Date(0);
       var loader = new Image();
     
-      
       function changeTime() {
         var now = new Date();
         if (now.getHours() != lastTime.getHours()) {
@@ -230,7 +229,7 @@
             b.appendChild(newDiv);
       }
 
-      setInterval(changeTime, 1000);
+    
     </script>
   </body>
 </html>
