@@ -91,12 +91,15 @@
       }
       
       .species {
-        display:inline-block;
-        font-size:0.5em;
+        display: inline-block;
+        word-break: break-word;
+        
+        font-size:0.25em;
         height:100%;
-        width:100%;
+        width:150px;
         background-color: pink;
-        overflow-wrap: break-word;
+        color:black;
+        
       }
     </style>
 
@@ -122,7 +125,6 @@
           <span
             id="secs"
             data-key="seconds"
-            
             data-view="flip"
           ></span>
         </div>
@@ -222,17 +224,12 @@
               .querySelector("#" + section)
               .querySelector(".tick-flip-back");
          
-            console.log("APENDEE:" + b);
 
             const newDiv = document.createElement("div");
             
             newDiv.classList.add("species");
-            console.log("APENDOR:" + newDiv);
-            const newContent = document.createTextNode(bird.comName);
-            newDiv.appendChild(newContent);
-        
-            
-
+            newDiv.innerHTML = bird.comName;
+    
             b.innerHTML = "";
             b.appendChild(newDiv);
       }
