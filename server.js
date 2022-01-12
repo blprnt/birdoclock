@@ -16,7 +16,9 @@ var listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-let countryCodes = [{ code: "US", weight: "1" }];
+let countryCodes = [
+  { code: "US", weight: "1" }
+];
 
 let rack = [];
 let imageSet = {};
@@ -85,7 +87,7 @@ function saveBirdImages() {
 }
 
 function getRecentBirds() {
-  let reg = "US";
+  let reg = "IN";
   //https://api.ebird.org/v2/data/obs/{{regionCode}}/recent
   let back = 1;
   var options = {

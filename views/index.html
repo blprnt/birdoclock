@@ -140,6 +140,9 @@
 
     <script>
       var lastTime = new Date(0);
+      var loader = new Image();
+    
+      
       function changeTime() {
         var now = new Date();
         if (now.getHours() != lastTime.getHours()) {
@@ -168,12 +171,28 @@
             .catch(function () {});
         }
         if (now.getSeconds() != lastTime.getSeconds()) {
+          //current
           fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
               response.text().then(function (text) {
                 try {
                   var bj = JSON.parse(text);
                   placeBird("secs", bj);
+
+                } catch (e) {}
+              });
+            })
+            .catch(function () {});
+          //next
+          let ni = ((now.getSeconds() + 2) % 60);
+          console.log("PRELOAD " + ni);
+           fetch("/birdNum?num=" + ni) // Call the fetch function passing the url of the API as a parameter
+            .then(function (response) {
+              response.text().then(function (text) {
+                try {
+                  var bj = JSON.parse(text);
+                  //placeBird("secs", bj);
+                  loader.src = bj.image;
 
                 } catch (e) {}
               });
