@@ -163,7 +163,7 @@ function getBirdNum(n) {
     
     //console.log("APPEND IMAGE")
     let img = imageSet[nb.speciesCode].image;
-    let w = 250;
+    let w = 500;
     nb.image = img.replace(
           "http://commons.wikimedia.org/wiki/Special:FilePath/",
           "https://commons.wikimedia.org/w/thumb.php?width=" + w + "&f="
@@ -263,10 +263,12 @@ function getWikiData(_bird, lang) {
     var j = JSON.parse(body);
     var b = j.results.bindings[0]["ebird"].value;
     var img = j.results.bindings[0]["image"].value;
+      
+      console.log(b + ":" + img);
       imageSet[b] = {"image":img};
       saveBirdImages();
     } catch(e) {
-      
+      console.log(e);
     }
     
   });
@@ -313,3 +315,5 @@ getNow();
 //setInterval(getNow, 1000);
 setInterval(getRecentBirds, 60000);
 setInterval(processImageQ, 1000);
+
+imageQ.push("fieldf");

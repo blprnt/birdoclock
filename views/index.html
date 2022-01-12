@@ -187,7 +187,7 @@
             })
             .catch(function () {});
           //next
-          let ni = ((now.getSeconds() + 2) % 60);
+          let ni = ((now.getSeconds() + 5) % 60);
           console.log("PRELOAD " + ni);
            fetch("/birdNum?num=" + ni) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
