@@ -118,8 +118,6 @@ function getRecentBirds() {
     },
   };
 
-  console.log(options.url);
-
   request(options, function (error, response, body) {
     if (error) console.log(error);
     const birds = JSON.parse(body);
@@ -128,6 +126,7 @@ function getRecentBirds() {
 }
 
 function fileBirds(birds) {
+  console.log("PROCESSING " + birds.length + " birds");
   build = false;
   let fc = 0;
   for (let i = 0; i < birds.length; i++) {
@@ -268,7 +267,8 @@ function getWikiData(_bird, lang) {
       imageSet[b] = {"image":img};
       saveBirdImages();
     } catch(e) {
-      console.log(e);
+      console.log("FAILED ON" + b);
+      //console.log(j.results.bindings[0]);
     }
     
   });
