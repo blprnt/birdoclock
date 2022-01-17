@@ -128,9 +128,12 @@
       
       .map {
         display:block;
+        left:0px;
+        top:0px;
         width:400px;
         height:300px;
-        background-color:green;
+        border:1px solid green;
+        stroke:rgb(0,0,0);
       }
     </style>
 
@@ -262,15 +265,18 @@
 
         //map
         //<svg id="my_dataviz" width="400" height="300">
-        const mapDiv = document.createElement("svg");
+        const mapDiv = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         
         infoBox.appendChild(mapDiv);
         mapDiv.id = "map" + bird.comName;
         mapDiv.classList.add("map");
+        
+        
         //think this will redraw maps
-        var svg = d3.select("svg"),
-          width = +svg.attr("width"),
-          height = +svg.attr("height");
+        var svg = d3.select("svg");
+        
+        var width = 300;
+        var height = 300;
         
         console.log(svg);
 
