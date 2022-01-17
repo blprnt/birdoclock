@@ -43,18 +43,15 @@
 
       .tick-text-inline {
         display: inline-block;
-        text-align: center;
         min-width: 1em;
         
       }
 
       .tick-text-inline + .tick-text-inline {
-        margin-left: -0.325em;
       }
 
       .tick-group {
-        margin: 0 0.5em;
-        text-align: center;
+        
       }
 
       body {
@@ -102,19 +99,18 @@
       .infoBox {
         position:absolute;
         display:inline-block;
+        left:0px;
         border: 1px solid white;
-        margin-left:0px;
         width:100%;
         height:100%;
-        color:orange;
         
       }
       
       .species {
-        margin-right:0.25em;
-        margin-left:0.25em;
-        margin-top:1em;
-        margin-left:-0.5em;
+        position:relative;
+        display:block;
+        height:100%;
+        top:0.5em;
         white-space: normal;
         font-size:0.2em !important;
         letter-spacing:0em !important;
@@ -122,10 +118,11 @@
       }
       
       .since {
-        margin-right:0.25em;
-        margin-left:0.25em;
-        margin-top:1em;
-        margin-left:-0.5em;
+        position:relative;
+        display:block;
+        height:0.25em;
+        width:auto;
+        bottom:2em;
         white-space: normal;
         font-size:0.1em !important;
         letter-spacing:0em !important;
@@ -263,21 +260,17 @@
             
             newDiv.classList.add("species");
             newDiv.innerHTML = bird.comName;
-    
             infoBox.appendChild(newDiv);
         
             const now = new Date();
-            console.log(bird);
             let dt = bird.obsDt.replaceAll(" ", "T");
             const then = new Date(dt);
-            console.log(then);
         
             //how many hours ago?
             const since = now.getTime() - then.getTime();
             const sinceHours = Math.round(since / (1000 * 60 * 60))
-            console.log(sinceHours);
         
-            let sinceMsg = sinceHours == 0 ? ("Just now"):(sinceHours + " hours ago.");
+            let sinceMsg = sinceHours == 0 ? ("Just now"):(sinceHours + " hours ago");
             const sinceDiv = document.createElement("div");
             sinceDiv.classList.add("since");
             sinceDiv.innerHTML = sinceMsg;
