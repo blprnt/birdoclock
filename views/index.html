@@ -23,7 +23,7 @@
       .tick {
         font-size: 1rem;
         font-family: arial, sans-serif;
-        margin:10em;
+        margin: 10em;
       }
 
       .tick-flip,
@@ -31,9 +31,7 @@
         font-size: 2.5em;
       }
 
-      
       .tick-flip-spacer {
-       
       }
       .tick-label {
         margin-top: 1em;
@@ -47,14 +45,12 @@
       .tick-text-inline {
         display: inline-block;
         min-width: 1em;
-        
       }
 
       .tick-text-inline + .tick-text-inline {
       }
 
       .tick-group {
-        
       }
 
       body {
@@ -79,11 +75,11 @@
 
       .tick-flip-panel-text-wrapper {
         line-height: 1.5 !important;
-        text-align:left;
-        font-size:0.5em;
-        margin-top:1.7em;
-        letter-spacing:0em;
-        margin-left:-0.3em;
+        text-align: left;
+        font-size: 0.5em;
+        margin-top: 1.7em;
+        letter-spacing: 0em;
+        margin-left: -0.3em;
       }
 
       .tick-flip-panel {
@@ -98,84 +94,77 @@
         border-radius: 0.05em !important;
         height: 3em;
       }
-      
+
       .infoBox {
-        position:absolute;
-        display:inline-block;
-        left:0px;
-        width:100%;
-        height:100%;
-        
+        position: absolute;
+        display: inline-block;
+        left: 0px;
+        width: 100%;
+        height: 100%;
       }
-      
+
       .species {
-        position:relative;
-        display:block;
-        height:100%;
-        top:0.5em;
+        position: relative;
+        display: block;
+        height: 100%;
+        top: 0.5em;
         white-space: normal;
-        font-size:0.2em !important;
-        letter-spacing:0em !important;
-        color:white;
+        font-size: 0.2em !important;
+        letter-spacing: 0em !important;
+        color: white;
+      }
+
+      .since {
+        position: relative;
+        display: block;
+        height: 0.25em;
+        width: auto;
+        bottom: 2em;
+        white-space: normal;
+        font-size: 0.1em !important;
+        letter-spacing: 0em !important;
+        color: white;
       }
       
-      .since {
-        position:relative;
+      .map {
         display:block;
-        height:0.25em;
-        width:auto;
-        bottom:2em;
-        white-space: normal;
-        font-size:0.1em !important;
-        letter-spacing:0em !important;
-        color:white;
+        width:400px;
+        height:300px;
+        background-color:green;
       }
     </style>
 
     <div class="tick" data-did-init="handleTickInit">
       <div data-layout="horizontal fit">
-        <span
-          id="hours"
-          data-key="hours"
-          data-view="flip"
-        ></span>
+        <span id="hours" data-key="hours" data-view="flip"></span>
 
-
-        <span
-          id="mins"
-          data-key="minutes"
-          data-view="flip"
-        ></span>
+        <span id="mins" data-key="minutes" data-view="flip"></span>
 
         <div class="secs">
-
-          <span
-            id="secs"
-            data-key="seconds"
-            data-view="flip"
-          ></span>
+          <span id="secs" data-key="seconds" data-view="flip"></span>
         </div>
       </div>
     </div>
     <script>
       function handleTickInit(tick) {
-        
         // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
           changeTime();
           var d = Tick.helper.date();
           tick.value = {
             sep: ".",
-            hours: d.getHours() < 10 ? "0" + d.getHours():d.getHours(),
-            minutes: d.getMinutes() < 10 ? "0" + d.getMinutes():d.getMinutes(),
-            seconds: d.getSeconds() < 10 ? "0" + d.getSeconds():d.getSeconds(),
+            hours: d.getHours() < 10 ? "0" + d.getHours() : d.getHours(),
+            minutes:
+              d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes(),
+            seconds:
+              d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds(),
           };
         });
       }
-  
+
       var lastTime = new Date(0);
       var loader = new Image();
-    
+
       function changeTime() {
         var now = new Date();
         if (now.getHours() != lastTime.getHours()) {
@@ -197,7 +186,6 @@
                 try {
                   var bj = JSON.parse(text);
                   placeBird("mins", bj);
-                  
                 } catch (e) {}
               });
             })
@@ -211,15 +199,14 @@
                 try {
                   var bj = JSON.parse(text);
                   placeBird("secs", bj);
-
                 } catch (e) {}
               });
             })
             .catch(function () {});
           //next
-          let ni = ((now.getSeconds() + 5) % 60);
+          let ni = (now.getSeconds() + 5) % 60;
           console.log("PRELOAD " + ni);
-           fetch("/birdNum?num=" + ni) // Call the fetch function passing the url of the API as a parameter
+          fetch("/birdNum?num=" + ni) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
               response.text().then(function (text) {
                 try {
@@ -227,7 +214,6 @@
                   //placeBird("secs", bj);
                   loader.src = bj.image;
                   console.log("PRELOAD:" + bj.image);
-
                 } catch (e) {}
               });
             })
@@ -235,58 +221,82 @@
         }
         lastTime = now;
       }
-      
+
       function placeBird(section, bird) {
-      
-            document
-              .querySelector("#" + section)
-              .querySelector(".tick-flip-panel-front")
-              .setAttribute(
-                  "style",
-                  "background-image: url('" + bird.image + "')"
-                );
+        document
+          .querySelector("#" + section)
+          .querySelector(".tick-flip-panel-front")
+          .setAttribute("style", "background-image: url('" + bird.image + "')");
 
-            var b = document
-              .querySelector("#" + section)
-              .querySelectorAll(".tick-flip-back")[1];
-         
-            b.innerHTML = "";
+        var b = document
+          .querySelector("#" + section)
+          .querySelectorAll(".tick-flip-back")[1];
+
+        b.innerHTML = "";
+
+        const infoBox = document.createElement("div");
+        infoBox.classList.add("infoBox");
+
+        b.appendChild(infoBox);
+
+        const newDiv = document.createElement("div");
+
+        newDiv.classList.add("species");
+        newDiv.innerHTML = bird.comName;
+        infoBox.appendChild(newDiv);
+
+        const now = new Date();
+        let dt = bird.obsDt.replaceAll(" ", "T");
+        const then = new Date(dt);
+
+        //how many hours ago?
+        const since = now.getTime() - then.getTime();
+        const sinceHours = Math.round(since / (1000 * 60 * 60)) + 5;
+
+        let sinceMsg = sinceHours == 0 ? "Just now" : sinceHours + " hours ago";
+        const sinceDiv = document.createElement("div");
+        sinceDiv.classList.add("since");
+        sinceDiv.innerHTML = sinceMsg;
+
+        infoBox.appendChild(sinceDiv);
+
+        //map
+        //<svg id="my_dataviz" width="400" height="300">
+        const mapDiv = document.createElement("svg");
         
-            const infoBox = document.createElement("div");
-            infoBox.classList.add("infoBox");
-            
-            b.appendChild(infoBox);
-            
+        infoBox.appendChild(mapDiv);
+        mapDiv.id = "map" + bird.comName;
+        mapDiv.classList.add("map");
+        //think this will redraw maps
+        var svg = d3.select("svg"),
+          width = +svg.attr("width"),
+          height = +svg.attr("height");
         
-            const newDiv = document.createElement("div");
-            
-            newDiv.classList.add("species");
-            newDiv.innerHTML = bird.comName;
-            infoBox.appendChild(newDiv);
-        
-            const now = new Date();
-            let dt = bird.obsDt.replaceAll(" ", "T");
-            const then = new Date(dt);
-        
-            //how many hours ago?
-            const since = now.getTime() - then.getTime();
-            const sinceHours = Math.round(since / (1000 * 60 * 60)) + 5;
-        
-            let sinceMsg = sinceHours == 0 ? ("Just now"):(sinceHours + " hours ago");
-            const sinceDiv = document.createElement("div");
-            sinceDiv.classList.add("since");
-            sinceDiv.innerHTML = sinceMsg;
-        
-            infoBox.appendChild(sinceDiv);
-        
-            //map
-            //<svg id="my_dataviz" width="400" height="300">
-            const mapDiv = document.createElement("svg");
-            map
-        
+        console.log(svg);
+
+        // Map and projection. Try:  d3.geoAiry() / d3.geoAitoff() / d3.geoArmadillo() / d3.geoAugust() / d3.geoAzimuthalEqualArea() / d3.geoAzimuthalEquidistant() and more
+        var projection = d3
+          .geoAitoff()
+          .scale(width / 1.3 / Math.PI)
+          .translate([width / 2, height / 2]);
+
+        // Load external data and boot
+        d3.json(
+          "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
+          function (data) {
+            // Draw the map
+            svg
+              .append("g")
+              .selectAll("path")
+              .data(data.features)
+              .enter()
+              .append("path")
+              .attr("fill", "#69b3a2")
+              .attr("d", d3.geoPath().projection(projection))
+              .style("stroke", "#fff");
+          }
+        );
       }
-
-    
     </script>
   </body>
 </html>
