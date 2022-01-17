@@ -89,10 +89,12 @@
 
       .tick-flip-panel-front {
         background-size: cover;
+        border: 12px solid white;
       }
 
       .tick-flip {
-        border-radius: 0.05em !important;
+        
+        border-radius: 0em !important;
         height: 3em;
       }
 
@@ -102,18 +104,18 @@
         left: 0px;
         width: 100%;
         height: 100%;
+        margin-top:0.1em;
         margin-left:0.1em;
+        margin-right:0.2em;
+        
       }
 
       .species {
         position: relative;
         display: block;
-        height: 100%;
-        top: 0.5em;
+        height: auto;
         left: 0px;
         width:100%;
-        
-        
         
         white-space: normal;
         text-indent:0px;
@@ -122,17 +124,34 @@
         letter-spacing: 0em !important;
         color: white;
         
-        background-color:blue;
+        
+        z-index:2;
+      }
+      
+      .latin {
+        position: relative;
+        display: block;
+        height: 100%;
+        top: 0em;
+        left: 0px;
+        width:100%;
+  
+        white-space: normal;
+        text-indent:0px;
+        
+        font-size: 0.15em !important;
+        letter-spacing: 0em !important;
+        color: #FFFFFF88;  
         
         z-index:2;
       }
 
       .since {
-        position: relative;
+        position: absolute;
         display: block;
         height: 0.25em;
         width: auto;
-        bottom: 2em;
+        bottom: 3em;
         font-size: 0.1em !important;
         letter-spacing: 0em !important;
         color: white;
@@ -142,10 +161,10 @@
       }
       
       .mapBox {
-        position:relative;
+        position:absolute;
         display:block;
         left:0px;
-        top:0px;
+        top:100%;
         width:100%;
         height:100%;
         z-index:1;
@@ -272,6 +291,12 @@
         newDiv.classList.add("species");
         newDiv.innerHTML = bird.comName;
         infoBox.appendChild(newDiv);
+        
+        const latinDiv = document.createElement("div");
+
+        latinDiv.classList.add("latin");
+        latinDiv.innerHTML = bird.sciName;
+        infoBox.appendChild(latinDiv);
 
         const now = new Date();
         let dt = bird.obsDt.replaceAll(" ", "T");
