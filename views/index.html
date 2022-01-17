@@ -79,7 +79,11 @@
 
       .tick-flip-panel-text-wrapper {
         line-height: 1.5 !important;
+        text-align:left;
         font-size:0.5em;
+        margin-top:1.7em;
+        letter-spacing:0em;
+        margin-left:-0.3em;
       }
 
       .tick-flip-panel {
@@ -233,6 +237,12 @@
     
             b.innerHTML = "";
             b.appendChild(newDiv);
+        
+            const now = new Date();
+            console.log(bird);
+            let dt = bird.obsDt.replaceAll(" ", "T");
+            const then = Date.parse(dt);
+            console.log(dt);
       }
 
     
