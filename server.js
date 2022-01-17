@@ -111,6 +111,8 @@ function getRecentBirds() {
       "/recent" +
       "?back=" +
       back +
+      "&includeProvisional=" + 
+      true + 
       "&mess=" +
       Math.random(),
     headers: {
@@ -155,7 +157,7 @@ function fileBirds(birds) {
 
 function getBirdNum(n) {
   
-  let nb = rack[n][0];//Math.floor(Math.random() * rack[n].length)];
+  let nb = rack[n][Math.floor(Math.random() * rack[n].length)];
   if (nb) {
   //console.log("GET BIRD NUM:" + nb.speciesCode + ":" + imageSet[nb.speciesCode])
   if (nb && imageSet[nb.speciesCode]) {
