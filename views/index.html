@@ -126,14 +126,23 @@
         color: white;
       }
       
-      .map {
+      .mapBox {
+        position:relative;
         display:block;
         left:0px;
         top:0px;
-        width:400px;
-        height:300px;
-        border:1px solid green;
-        stroke:rgb(0,0,0);
+        width:100%;
+        height:100%;
+        z-index:1;
+      }
+      
+      .mapSvg {
+        position:relative;
+        left:0px;
+        top:-100%;
+        display:block;
+        width:100%;
+        height:100%;
       }
     </style>
 
@@ -265,12 +274,15 @@
 
         //map
         //<svg id="my_dataviz" width="400" height="300">
+        const mapBox = document.createElement("div");
+        mapBox.classList.add("mapBox");
+        
         const mapDiv = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         
-        infoBox.appendChild(mapDiv);
+        infoBox.appendChild(mapBox);
+        mapBox.appendChild(mapDiv);
         mapDiv.id = "map" + bird.comName;
-        mapDiv.classList.add("map");
-        
+        mapDiv.classList.add("mapSvg")
         
         //think this will redraw maps
         var svg = d3.select("svg");
@@ -299,7 +311,7 @@
               .append("path")
               .attr("fill", "#69b3a2")
               .attr("d", d3.geoPath().projection(projection))
-              .style("stroke", "#fff");
+              .style("stroke", none);
           }
         );
       }
