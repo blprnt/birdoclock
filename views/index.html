@@ -99,6 +99,17 @@
         height: 3em;
       }
       
+      .infoBox {
+        position:absolute;
+        display:inline-block;
+        border: 1px solid white;
+        margin-left:0px;
+        width:100%;
+        height:100%;
+        color:orange;
+        
+      }
+      
       .species {
         margin-right:0.25em;
         margin-left:0.25em;
@@ -106,6 +117,17 @@
         margin-left:-0.5em;
         white-space: normal;
         font-size:0.2em !important;
+        letter-spacing:0em !important;
+        color:white;
+      }
+      
+      .since {
+        margin-right:0.25em;
+        margin-left:0.25em;
+        margin-top:1em;
+        margin-left:-0.5em;
+        white-space: normal;
+        font-size:0.1em !important;
         letter-spacing:0em !important;
         color:white;
       }
@@ -229,20 +251,38 @@
               .querySelector("#" + section)
               .querySelectorAll(".tick-flip-back")[1];
          
-
+            b.innerHTML = "";
+        
+            const infoBox = document.createElement("div");
+            infoBox.classList.add("infoBox");
+            
+            b.appendChild(infoBox);
+            
+        
             const newDiv = document.createElement("div");
             
             newDiv.classList.add("species");
             newDiv.innerHTML = bird.comName;
     
-            b.innerHTML = "";
-            b.appendChild(newDiv);
+            infoBox.appendChild(newDiv);
         
             const now = new Date();
             console.log(bird);
             let dt = bird.obsDt.replaceAll(" ", "T");
-            const then = Date.parse(dt);
-            console.log(dt);
+            const then = new Date(dt);
+            console.log(then);
+        
+            //how many hours ago?
+            const since = now.getTime() - then.getTime();
+            const sinceHours = Math.round(since / (1000 * 60 * 60))
+            console.log(sinceHours);
+        
+            let sinceMsg = sinceHours == 0 ? ("Just now"):(sinceHours + " hours ago.");
+            const sinceDiv = document.createElement("div");
+            sinceDiv.classList.add("since");
+            sinceDiv.innerHTML = sinceMsg;
+        
+            infoBox.appendChild(sinceDiv);
       }
 
     
