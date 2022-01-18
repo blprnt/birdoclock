@@ -284,7 +284,10 @@
           targets: "#intro",
           opacity: 1,
           left:"40vw",
-          duration:5000
+          duration:5000,
+          begin:function() {
+            setText("hours");
+          }
         })
         .add({
           targets: "#hours",
@@ -331,9 +334,13 @@
       };
       
       //text switching 
-      setText(id) {
-        let el = document.getElementById(id);
-        let num = ""
+      function setText(id) {
+        let time = "8 minutes"
+        let num = 57;
+        let species = timeMap[id].species;
+        document.getElementById("intro").innerHTML =
+          time + " ago someone out there in the world counted " +
+          num + " " + species
       }
       //interface logic
       document.getElementById("two").onclick = function () {
@@ -357,14 +364,20 @@
         Tick.helper.interval(function () {
           changeTime();
           var d = Tick.helper.date();
+          var h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
+          var m = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
+          var s = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
           tick.value = {
             sep: ".",
-            hours: d.getHours() < 10 ? "0" + d.getHours() : d.getHours(),
+            hours: h,
             minutes:
-              d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes(),
+              m,
             seconds:
-              d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds(),
+              s,
           };
+          timeMap.hours.time = h;
+          timeMap.secs.time = s;
+          timeMap.mins.time = m;
         });
       }
 
@@ -431,6 +444,9 @@
         start = false;
       }
 
+      
+      var timeMap = {hours:{}, mins:{}, secs:{}};
+      
       function placeBird(section, bird) {
         document
           .querySelector("#" + section)
