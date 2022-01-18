@@ -70,7 +70,6 @@
       body {
         background-color: rgb(255, 255, 255) !important;
         min-width:1000px;
-        border: 1px solid red;
       }
 
       .tick-text-inline {
@@ -248,12 +247,12 @@
     </div>
 
     <div id="intro">
-      </div>
+    </div>
     
     <div id="wrapper">
       
       <div class="tick" data-did-init="handleTickInit">
-        <div data-layout="horizontal fit" id="tickBox" autoSize="false">
+        <div data-layout="horizontal fit" id="tickBox">
           <span
             id="hours"
             data-key="hours"
@@ -442,10 +441,12 @@
           .setAttribute("style", "display:inline-block");
         document.getElementById("wrapper").setAttribute("style", "left:0px");
       };
+      
 
       function handleTickInit(tick) {
         // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
+
           changeTime();
           var d = Tick.helper.date();
           var h = d.getHours() ;
