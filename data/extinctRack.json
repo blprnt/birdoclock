@@ -17,11 +17,22 @@
       "comName": "Kamao",
       "sciName": "Myadestes myadestinus",
       "locId": "L17448348",
-      "locName": "Lago Atitlán",
+      "locName": "Pihea Trail",
       "obsDt": "1984-04-21 08:17",
       "howMany": 1,
-      "lat": -14.690908,
-      "lng": -91.174746
+      "lat": -22.143090,
+      "lng": -159.621426
+    },
+      {
+      "speciesCode": "guafly1",
+      "comName": "Guam Flycatcher",
+      "sciName": "Myiagra freycineti",
+      "locId": "L17448348",
+      "locName": "Anderson Air Force Base",
+      "obsDt": "1978-08-29 08:17",
+      "howMany": 1,
+      "lat": -13.569602,
+      "lng": -144.904535
     }
     ]
   ]
