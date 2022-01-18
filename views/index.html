@@ -220,12 +220,12 @@
       #intro {
         display: block;
         left: 10vw;
-        top: 10vh;
+        top: 5vh;
         position: absolute;
-        width: 40vw;
+        width: 32vw;
         text-align: left;
         font-family: Outfit, arial, sans-serif;
-        font-size: 5vw;
+        font-size: 4vw;
         color: #665566;
         opacity: 0;
       }
@@ -291,18 +291,50 @@
           opacity:"1",
           duration:1500
           
-        },-500),
-        tl.add({
+        },"-=2000")
+        .add({
           targets: "#intro",
-          left:"70vw",
-          duration:5000
+          opacity:0,
+          duration:100
+        })
+        .add({
+          targets: "#intro",
+          left:"65vw",
+          duration:5000,
+          opacity:1
         })
         .add({
           targets: "#mins",
           opacity:"1",
           duration:1500
-        }, "-500")
+        },"-=1000")
+        .add({
+          targets: "#intro",
+          opacity:0,
+          duration:100
+        })
+        .add({
+          targets: "#intro",
+          opacity:1,
+          duration:5000,
+        })
+        .add({
+          targets: "#intro",
+          opacity:0,
+          duration:1000,
+        })
+        .add({
+          targets: "#secs",
+          opacity:1,
+          duration:1500,
+        }, "-=500")
       };
+      
+      //text switching 
+      setText(id) {
+        let el = document.getElementById(id);
+        let num = ""
+      }
       //interface logic
       document.getElementById("two").onclick = function () {
         console.log("switch to two");
