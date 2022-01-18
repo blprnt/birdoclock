@@ -33,6 +33,29 @@
       "howMany": 1,
       "lat": -13.569602,
       "lng": -144.904535
+    },
+      {
+      "speciesCode": "nigrew1",
+      "comName": "Nightingale Reed Warbler",
+      "sciName": "Acrocephalus luscinius",
+      "locId": "L17448348",
+      "locName": "Agana Springs",
+      "obsDt": "1967-11-04 08:17",
+      "howMany": 1,
+      "lat": -13.464935, 
+      "lng": -144.741110
+    },
+      
+      {
+      "speciesCode": "slbgra1",
+      "comName": "Slender-Billed Grackle",
+      "sciName": "Acrocephalus luscinius",
+      "locId": "L17448348",
+      "locName": "Agana Springs",
+      "obsDt": "1953-03-06 08:17",
+      "howMany": 1,
+      "lat": -13.464935, 
+      "lng": -144.741110
     }
     ]
   ]
