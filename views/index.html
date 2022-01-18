@@ -205,6 +205,8 @@
         cursor: pointer;
         letter-spacing: -0.1em;
         opacity: 0.6;
+        z-index:10;
+        pointer-events:auto;
       }
 
       .switchButton:hover {
@@ -219,7 +221,7 @@
         width: 100%;
         height: 100%;
         display: block;
-        pointer-events: none;
+        //pointer-events: none;
       }
 
       #intro {
@@ -576,6 +578,12 @@
         newDiv.innerHTML = bird.comName;
         timeMap[section].species = bird.comName;
         infoBox.appendChild(newDiv);
+        newDiv.setAttribute("data-bird", bird.speciesCode)
+        //newDiv.data.bird = bird.speciesCode;
+        newDiv.onclick = function() {
+          console.log("CLOICK");
+          window.open("https://ebird.org/species/" + this.dataset.bird);
+        }
 
         const latinDiv = document.createElement("div");
 
@@ -614,6 +622,9 @@
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
         sinceDiv.innerHTML = sinceMsg;
+        sinceDiv.onclick = function() {
+          //window.open("https://ebird.org/checklist/" + );
+        }
         timeMap[section].ago = sinceMsg;
 
         infoBox.appendChild(sinceDiv);
