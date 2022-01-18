@@ -19,6 +19,9 @@
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap');
     </style>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+</style>
     <!--script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/addons/p5.dom.js"></script-->
     <!--script src="/sketch.js"></script-->
   </head>
@@ -36,6 +39,8 @@
       }
 
       .tick-flip-spacer {
+        width:2em;
+        
       }
       .tick-label {
         margin-top: 1em;
@@ -219,10 +224,11 @@
 
       var lastTime = new Date(0);
       var loader = new Image();
+      var start = true;
 
       function changeTime() {
         var now = new Date();
-        if (now.getHours() != lastTime.getHours()) {
+        if (now.getHours() != lastTime.getHours() || start) {
           fetch("/birdNum?num=" + now.getHours()) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
               response.text().then(function (text) {
@@ -234,7 +240,7 @@
             })
             .catch(function () {});
         }
-        if (now.getMinutes() != lastTime.getMinutes()) {
+        if (now.getMinutes() != lastTime.getMinutes() || start) {
           fetch("/birdNum?num=" + now.getMinutes()) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
               response.text().then(function (text) {
@@ -246,7 +252,7 @@
             })
             .catch(function () {});
         }
-        if (now.getSeconds() != lastTime.getSeconds()) {
+        if (now.getSeconds() != lastTime.getSeconds() || start) {
           //current
           fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
@@ -275,6 +281,7 @@
             .catch(function () {});
         }
         lastTime = now;
+        start = false;
       }
 
       function placeBird(section, bird) {
@@ -317,7 +324,7 @@
         const colors = ["#26AE25","#009E5A","#008A77","#00757F","#005E73","#2F4858"]
 
         let sinceMsg = sinceHours == 0 ? "Just now" : sinceHours + " hours ago";
-        let ci = Math.ceil(Math.min(Math.pow(sinceHours, 0.4), colors.length - 1));
+        let ci = Math.ceil(Math.min(Math.pow(sinceHours, 0.33), colors.length - 1));
         b.setAttribute("style", "background-color:" + colors[ci] + " !important;");
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
