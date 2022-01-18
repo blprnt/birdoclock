@@ -240,8 +240,6 @@
     </div>
 
     <div id="intro">
-        Seven hours ago somebody out there in the word counted fifty-seven
-        horned neck grebe.
       </div>
     
     <div id="wrapper">
@@ -275,7 +273,9 @@
     </div>
     <script>
       //intro
-      window.onload = function () {
+      var introed = false;
+      function startIntro () {
+        introed = true;
         console.log("INTRO! Queue fireworks!");
         var tl = anime.timeline({
           easing: "easeOutExpo"
@@ -304,7 +304,10 @@
           targets: "#intro",
           left:"65vw",
           duration:5000,
-          opacity:1
+          opacity:1,
+          begin:function() {
+            setText("mins");
+          }
         })
         .add({
           targets: "#mins",
@@ -319,13 +322,26 @@
         .add({
           targets: "#intro",
           opacity:1,
-          duration:5000,
+          duration:1000,
+          begin:function() {
+            setText("secs");
+          }
         })
         .add({
           targets: "#intro",
           opacity:0,
-          duration:1000,
+          duration:50,
         })
+        .add({
+          targets: "#intro",
+          opacity:1,
+          duration:500,
+          begin:function() {
+            setText("secs");
+          }
+          
+        })
+        
         .add({
           targets: "#secs",
           opacity:1,
@@ -335,12 +351,13 @@
       
       //text switching 
       function setText(id) {
-        let time = "8 minutes"
-        let num = 57;
+        console.log("SETTING TEXT:" + timeMap[id].species);
+        let time = timeMap[id].ago;
+        let num = timeMap[id].time;
         let species = timeMap[id].species;
         document.getElementById("intro").innerHTML =
-          time + " ago someone out there in the world counted " +
-          num + " " + species
+          time + " someone out there in the world counted " +
+          num + " " + species + "."
       }
       //interface logic
       document.getElementById("two").onclick = function () {
@@ -468,6 +485,7 @@
 
         newDiv.classList.add("species");
         newDiv.innerHTML = bird.comName;
+        timeMap[section].species = bird.comName;
         infoBox.appendChild(newDiv);
 
         const latinDiv = document.createElement("div");
@@ -504,6 +522,7 @@
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
         sinceDiv.innerHTML = sinceMsg;
+        timeMap[section].ago = sinceMsg;
 
         infoBox.appendChild(sinceDiv);
 
@@ -574,6 +593,8 @@
               .attr("fill-opacity", 0.4);
           }
         );
+        
+        if (!introed && section == 'hours') startIntro();
       }
     </script>
   </body>
