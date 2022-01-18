@@ -313,8 +313,12 @@
         //how many hours ago?
         const since = now.getTime() - then.getTime();
         const sinceHours = Math.round(since / (1000 * 60 * 60)) + 5;
+        
+        const colors = ["#26AE25","#009E5A","#008A77","#00757F","#005E73","#2F4858"]
 
         let sinceMsg = sinceHours == 0 ? "Just now" : sinceHours + " hours ago";
+        let ci = Math.ceil(Math.min(Math.pow(sinceHours, 0.4), colors.length - 1));
+        b.setAttribute("style", "background-color:" + colors[ci] + " !important;");
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
         sinceDiv.innerHTML = sinceMsg;
