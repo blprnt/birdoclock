@@ -83,10 +83,12 @@ function trimBirds() {
     let newb = [];
     for (let j = 0; j < rack[i].length; j++) {
       if (rack[i][j]) {
-        if (imageQ.indexOf(rack[i][j].comName != -1 || imageSet[comName]))
+        if (imageQ.indexOf(rack[i][j].speciesCode != -1 || imageSet[rack[i][j].speciesCode])) {
+          newb.push(rack[i][j]);
+        }
       }
     }
-    rack[i] = rack[i].slice(0, 10);
+    rack[i] = newb.slice(0, 10);
   }
 }
 

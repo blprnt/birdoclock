@@ -30,7 +30,7 @@
       .tick {
         font-size: 1rem;
         font-family: Outfit, arial, sans-serif;
-        margin: 10em;
+        margin: 2em 6em 1em 6em;
       }
 
       .tick-flip,
@@ -193,7 +193,14 @@
         height:100%;
       }
     </style>
-
+    <div id="controls">
+      <div id="two">
+        two
+      </div>
+      <div id="three">
+        three
+      </div>
+    </div>
     <div class="tick" data-did-init="handleTickInit">
       <div data-layout="horizontal fit">
         <span id="hours" data-key="hours" data-view="flip"></span>
@@ -336,7 +343,7 @@
         //where?
         const whereDiv = document.createElement("div");
         whereDiv.classList.add("where");
-        whereDiv.innerHTML = 
+        //whereDiv.innerHTML = 
 
         //map
         //<svg id="my_dataviz" width="400" height="300">
