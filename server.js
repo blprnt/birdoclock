@@ -79,6 +79,13 @@ function loadBirdImages() {
 
 function trimBirds() {
   for (let i = 0; i < rack.length; i++) {
+    //cull
+    let newb = [];
+    for (let j = 0; j < rack[i].length; j++) {
+      if (rack[i][j]) {
+        if (imageQ.indexOf(rack[i][j].comName != -1 || imageSet[comName]))
+      }
+    }
     rack[i] = rack[i].slice(0, 10);
   }
 }
