@@ -98,7 +98,7 @@
 
       .tick-flip-panel-front {
         background-size: cover;
-        border-width: 12px 12px 20px 12px;
+        border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color:white;
         border-style:solid;
       }
@@ -194,11 +194,11 @@
       }
     </style>
     <div id="controls">
-      <div id="two">
-        two
+      <div id="two" class="switchButton">
+        ⬜ ⬜
       </div>
       <div id="three">
-        three
+        ⬜ ⬜ ⬜
       </div>
     </div>
     <div class="tick" data-did-init="handleTickInit">
@@ -213,6 +213,19 @@
       </div>
     </div>
     <script>
+      //interface logic
+      document.getElementById('two').onclick = function() {
+        console.log("switch to two");
+        document.getElementById('secs').setAttribute("style", "display:none");
+      }
+      
+      document.getElementById('three').onclick = function() {
+        console.log("switch to three");
+        document.getElementById('secs').setAttribute("style", "display:inline-block");
+      }
+      
+      
+      
       function handleTickInit(tick) {
         // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
