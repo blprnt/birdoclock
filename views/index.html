@@ -230,7 +230,7 @@
         opacity: 0;
       }
       .clockBlock {
-        visibility: hidden;
+        opacity: 0;
       }
     </style>
 
@@ -239,11 +239,13 @@
       <div id="three" class="switchButton">⬜ ⬜ ⬜</div>
     </div>
 
-    <div id="wrapper">
-      <div id="intro">
+    <div id="intro">
         Seven hours ago somebody out there in the word counted fifty-seven
         horned neck grebe.
       </div>
+    
+    <div id="wrapper">
+      
       <div class="tick" data-did-init="handleTickInit">
         <div data-layout="horizontal fit" id="tickBox">
           <span
@@ -276,23 +278,30 @@
       window.onload = function () {
         console.log("INTRO! Queue fireworks!");
         var tl = anime.timeline({
-          easing: "easeOutExpo",
-          duration: 5000,
+          easing: "easeOutExpo"
         });
         tl.add({
           targets: "#intro",
           opacity: 1,
+          left:"40vw",
+          duration:5000
         })
         .add({
           targets: "#hours",
-          visibility:visible;
-          duration:0;
+          opacity:"1",
+          duration:1500
+          
+        },-500),
+        tl.add({
+          targets: "#intro",
+          left:"70vw",
+          duration:5000
         })
         .add({
-          targets: "#intro",
-          left: "30vw",
-          duration: 2000
-        });
+          targets: "#mins",
+          opacity:"1",
+          duration:1500
+        }, "-500")
       };
       //interface logic
       document.getElementById("two").onclick = function () {
