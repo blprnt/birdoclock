@@ -267,14 +267,13 @@
             class="clockBlock"
           ></span>
 
-          <div class="secs">
             <span
               id="secs"
               data-key="seconds"
               data-view="flip"
               class="clockBlock"
             ></span>
-          </div>
+        
         </div>
       </div>
     </div>
@@ -430,7 +429,7 @@
         console.log("switch to two");
         document
           .getElementById("secs")
-          .setAttribute("style", "display:none");
+          .setAttribute("style", "visibility:hidden");
         document.getElementById("wrapper").setAttribute("style", "left:11vw");
       };
 
@@ -438,7 +437,7 @@
         console.log("switch to three");
         document
           .getElementById("secs")
-          .setAttribute("style", "display:inline-block");
+          .setAttribute("style", "visibility:visible; opacity:1");
         document.getElementById("wrapper").setAttribute("style", "left:0px");
       };
       
@@ -510,7 +509,7 @@
             .catch(function () {});
           //next
           let ni = (now.getSeconds() + 5) % 60;
-          console.log("PRELOAD " + ni);
+          //console.log("PRELOAD " + ni);
           fetch("/birdNum?num=" + ni) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
               response.text().then(function (text) {
@@ -519,7 +518,7 @@
                   //placeBird("secs", bj);
                   var pl = new Image();
                   pl.src = bj.image;
-                  console.log("PRELOAD:" + bj.image);
+                  //console.log("PRELOAD:" + bj.image);
                 } catch (e) {}
               });
             })
