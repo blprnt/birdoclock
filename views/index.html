@@ -423,14 +423,14 @@
         let species = timeMap[id].species;
         document.getElementById("intro").innerHTML =
           time + " someone " + (id == "hours" ? "out there in the world":"") + " counted " +
-          "<span>" + num + " " + species + "<span>."
+          "<span style='color:" + timeMap[id].color + "'>" + num + " " + species + "<span>."
       }
       //interface logic
       document.getElementById("two").onclick = function () {
         console.log("switch to two");
         document
           .getElementById("secs")
-          .setAttribute("style", "visibility:hidden");
+          .setAttribute("style", "display:none");
         document.getElementById("wrapper").setAttribute("style", "left:11vw");
       };
 
@@ -569,6 +569,7 @@
         //how many hours ago?
         const since = now.getTime() - then.getTime();
         const sinceHours = Math.round(since / (1000 * 60 * 60)) + 5;
+        if (sinceHours < 0) sinceHours = 0;
 
         const colors = [
           "#26AE25",
@@ -587,6 +588,8 @@
           "style",
           "background-color:" + colors[ci] + " !important;"
         );
+        timeMap[section].color = colors[ci];
+        
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
         sinceDiv.innerHTML = sinceMsg;
