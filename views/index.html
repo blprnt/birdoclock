@@ -313,7 +313,7 @@
           targets: "#mins",
           opacity:"1",
           duration:1500
-        },"-=1000")
+        },"-=3000")
         .add({
           targets: "#intro",
           opacity:0,
@@ -322,7 +322,7 @@
         .add({
           targets: "#intro",
           opacity:1,
-          duration:1000,
+          duration:900,
           begin:function() {
             setText("secs");
           }
@@ -335,13 +335,68 @@
         .add({
           targets: "#intro",
           opacity:1,
-          duration:500,
+          duration:950,
           begin:function() {
             setText("secs");
           }
-          
         })
-        
+        .add({
+          targets: "#intro",
+          opacity:0,
+          duration:50,
+        })
+        .add({
+          targets: "#intro",
+          opacity:1,
+          duration:950,
+          begin:function() {
+            setText("secs");
+          }
+        })
+        .add({
+          targets: "#intro",
+          opacity:0,
+          duration:50,
+        })
+        .add({
+          targets: "#intro",
+          opacity:1,
+          duration:950,
+          begin:function() {
+            setText("secs");
+          }
+        })
+        .add({
+          targets: "#intro",
+          opacity:0,
+          duration:50,
+        })
+        .add({
+          targets: "#intro",
+          opacity:1,
+          duration:950,
+          begin:function() {
+            setText("secs");
+          }
+        })
+        .add({
+          targets: "#intro",
+          opacity:0,
+          duration:50,
+        })
+        .add({
+          targets: "#intro",
+          opacity:1,
+          duration:950,
+          begin:function() {
+            setText("secs");
+          }
+        })
+        .add({
+          targets: "#intro",
+          opacity:0,
+          duration:50,
+        })
         .add({
           targets: "#secs",
           opacity:1,
@@ -356,8 +411,8 @@
         let num = timeMap[id].time;
         let species = timeMap[id].species;
         document.getElementById("intro").innerHTML =
-          time + " someone out there in the world counted " +
-          num + " " + species + "."
+          time + " someone " + (id == "hours" ? "out there in the world":"") + " counted " +
+          "<span>" + num + " " + species + "<span>."
       }
       //interface logic
       document.getElementById("two").onclick = function () {
@@ -381,16 +436,16 @@
         Tick.helper.interval(function () {
           changeTime();
           var d = Tick.helper.date();
-          var h = d.getHours() < 10 ? "0" + d.getHours() : d.getHours();
-          var m = d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes();
-          var s = d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds();
+          var h = d.getHours() ;
+          var m = d.getMinutes();
+          var s = d.getSeconds();
           tick.value = {
             sep: ".",
-            hours: h,
+            hours: h < 10 ? "0" + h : h,
             minutes:
-              m,
+              m < 10 ? "0" + m : m,
             seconds:
-              s,
+              s < 10 ? "0" + s : s,
           };
           timeMap.hours.time = h;
           timeMap.secs.time = s;
