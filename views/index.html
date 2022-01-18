@@ -273,7 +273,8 @@
                 try {
                   var bj = JSON.parse(text);
                   //placeBird("secs", bj);
-                  loader.src = bj.image;
+                  var pl = new Image();
+                  pl.src = bj.image;
                   console.log("PRELOAD:" + bj.image);
                 } catch (e) {}
               });
