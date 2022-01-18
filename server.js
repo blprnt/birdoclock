@@ -30,6 +30,7 @@ let countryCodes = [
 let countryIndex = 0;
 
 let rack = [];
+let extinct = [];
 let imageSet = {};
 let imageQ = [];
 let obsMap = {};
@@ -46,7 +47,6 @@ function buildMap() {
     for (let j = 0; j < rack[i].length; j++) {
       let sn = rack[i][j].speciesCode;
       if (!imageSet[sn] && imageQ.indexOf(sn) == -1) {
-        console.log(sn);
         imageQ.push(sn);
       }
       obsMap[rack[i][j].comName + rack[i][j].locId] = true;
@@ -54,17 +54,32 @@ function buildMap() {
   }
 }
 
+
 function loadRack() {
   try {
     let rawdata = fs.readFileSync("data/lastRack.json");
     rack = JSON.parse(rawdata);
-    buildMap();
+    loadExtinct();
     console.log("LOADED RACK");
     build = false;
   } catch (e) {
     console.log(e);
     buildRack();
     console.log("BUILDING NEW RACK");
+  }
+}
+
+function loadExtinct() {
+  
+  try {
+    let rawdata = fs.readFileSync("data/extinctRack.json");
+    extinct = JSON.parse(rawdata);
+    rack[0] = extinct[0];
+    buildMap();
+    console.log("LOADED EXTINCT RACK");
+    build = false;
+  } catch (e) {
+    
   }
 }
 

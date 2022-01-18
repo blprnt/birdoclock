@@ -1,0 +1,27 @@
+
+  [
+    [
+    {
+      "speciesCode": "atigre1",
+      "comName": "Atitlan Grebe",
+      "sciName": "Podilymbus gigas",
+      "locId": "L17448348",
+      "locName": "Lago Atitlán",
+      "obsDt": "1986-09-03 08:17",
+      "howMany": 1,
+      "lat": -14.690908,
+      "lng": -91.174746
+    },
+      {
+      "speciesCode": "kamao",
+      "comName": "Kamao",
+      "sciName": "Myadestes myadestinus",
+      "locId": "L17448348",
+      "locName": "Lago Atitlán",
+      "obsDt": "1984-04-21 08:17",
+      "howMany": 1,
+      "lat": -14.690908,
+      "lng": -91.174746
+    }
+    ]
+  ]
