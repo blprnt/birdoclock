@@ -217,6 +217,22 @@
         display:block;
         pointer-events:none;
       }
+      
+      #intro {
+        display:block;
+        left:10vw;
+        top:10vh;
+        position:absolute;
+        width:40vw;
+        text-align:left;
+        font-family: Outfit, arial, sans-serif;
+        font-size:5vw;
+        color:#665566
+        
+      }
+      .clockBlock {
+        visibility:hidden;
+      }
     </style>
     
       
@@ -231,14 +247,17 @@
     </div>
     
     <div id="wrapper">
+    <div id="intro">
+      Seven hours ago somebody out there in the word counted fifty-seven horned neck grebe.
+    </div>
     <div class="tick"  data-did-init="handleTickInit">
       <div data-layout="horizontal fit" id="tickBox"> 
-        <span id="hours" data-key="hours" data-view="flip"></span>
+        <span id="hours" data-key="hours" data-view="flip" class="clockBlock"></span>
 
-        <span id="mins" data-key="minutes" data-view="flip"></span>
+        <span id="mins" data-key="minutes" data-view="flip" class="clockBlock"></span>
 
         <div class="secs">
-          <span id="secs" data-key="seconds" data-view="flip"></span>
+          <span id="secs" data-key="seconds" data-view="flip" class="clockBlock"></span>
         </div>
       </div>
     </div>
