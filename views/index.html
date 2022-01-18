@@ -69,6 +69,8 @@
 
       body {
         background-color: rgb(255, 255, 255) !important;
+        min-width:1000px;
+        border: 1px solid red;
       }
 
       .tick-text-inline {
@@ -178,6 +180,7 @@
       
       .tickBox {
         width:80vw;
+        min-width:1000px;
       }
 
       .mapBox {
@@ -234,6 +237,7 @@
         opacity: 0;
       }
       .clockBlock {
+        display:block;
         opacity: 0;
       }
     </style>
@@ -405,7 +409,11 @@
           targets: "#secs",
           opacity:1,
           duration:1500,
+          complete: function() {
+            document.querySelector("#intro").remove();
+          }
         }, "-=500")
+          
       };
       
       //text switching 
