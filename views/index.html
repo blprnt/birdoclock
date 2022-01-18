@@ -206,7 +206,21 @@
       .switchButton:hover {
         opacity:1;
       }
+      
+      #wrapper {
+        position:absolute;
+        padding:10px;
+        left:0px;
+        top:0px;
+        width:100%;
+        height:100%;
+        display:block;
+        pointer-events:none;
+      }
     </style>
+    
+      
+    
     <div id="controls">
       <div id="two" class="switchButton">
         ⬜ ⬜
@@ -215,6 +229,8 @@
         ⬜ ⬜ ⬜
       </div>
     </div>
+    
+    <div id="wrapper">
     <div class="tick"  data-did-init="handleTickInit">
       <div data-layout="horizontal fit" id="tickBox"> 
         <span id="hours" data-key="hours" data-view="flip"></span>
@@ -226,16 +242,19 @@
         </div>
       </div>
     </div>
+      </div>
     <script>
       //interface logic
       document.getElementById('two').onclick = function() {
         console.log("switch to two");
-        document.getElementById('secs').setAttribute("style", "visibility:false");
+        document.getElementById('secs').setAttribute("style", "visibility:hidden");
+        document.getElementById('wrapper').setAttribute("style", "left:11em");
       }
       
       document.getElementById('three').onclick = function() {
         console.log("switch to three");
         document.getElementById('secs').setAttribute("style", "display:inline-block");
+        document.getElementById('wrapper').setAttribute("style", "left:0px");
       }
       
       
