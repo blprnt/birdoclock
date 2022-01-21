@@ -18,14 +18,7 @@ var listener = app.listen(process.env.PORT, function () {
 
 
 let countryCodes = [
-  { code: "US", weight: "1" },
-  { code: "CA", weight: "1" },
-  { code: "IN", weight: "1" },
-  { code: "AU", weight: "1" },
-  { code: "BR", weight: "1" },
-  { code: "GB", weight: "1" },
-  { code: "TW", weight: "1" },
-  { code: "MX", weight: "1" }
+  { code: "US-NY-047", weight: "1" }
 ];
 
 let countryIndex = 0;
