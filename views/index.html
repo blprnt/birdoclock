@@ -102,7 +102,8 @@
       }
 
       .tick-flip-panel {
-        background-color: rgb(90, 93, 99) !important;
+        background-color: rgb(90, 120, 99) !important;
+        
       }
 
       .tick-flip-panel-front {
@@ -110,6 +111,7 @@
         border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color: white;
         border-style: solid;
+        background-image:url("https://cdn.glitch.global/785f3f5b-0e4b-460a-a945-ee588d6763ce/birdWhiteFade.jpg?v=1642774337039");
       }
 
       .tick-flip {
@@ -575,11 +577,14 @@
                   var bj = JSON.parse(text);
                   //placeBird("secs", bj);
                   var pl = new Image();
+                  console.log(bj.comName);
                   pl.src = bj.image;
                   //console.log("PRELOAD:" + bj.image);
                 } catch (e) {}
               });
             })
+          
+          
             .catch(function () {});
         }
         lastTime = now;
