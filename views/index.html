@@ -111,7 +111,7 @@
         border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color: white;
         border-style: solid;
-        background-image:url("https://cdn.glitch.global/785f3f5b-0e4b-460a-a945-ee588d6763ce/birdWhiteFade.jpg?v=1642774337039");
+        background-image:url("https://cdn.glitch.global/785f3f5b-0e4b-460a-a945-ee588d6763ce/birdWhiteFade.png?v=1642774437036");
       }
 
       .tick-flip {
@@ -282,12 +282,13 @@
     <div id="controls">
       <div id="two" class="switchButton">⬜ ⬜</div>
       <div id="three" class="switchButton">⬜ ⬜ ⬜</div>
+      <div id="full" class="switchButton">expand</div>
     </div>
 
     <div id="intro"></div>
 
     <div id="wrapper">
-      <div class="tick" data-did-init="handleTickInit">
+      <div class="tick" data-did-init="handleTickInit" id="clock">
         <div data-layout="horizontal fit" id="tickBox">
           <span
             id="hours"
@@ -504,6 +505,15 @@
         document.getElementById("wrapper").setAttribute("style", "left:0px");
       };
 
+      document.getElementById("full").onclick = function () {
+        console.log("go fullscreen");
+        var elem = document.documentElement;
+        elem.requestFullscreen();
+        document.getElementById("controls").setAttribute("style", "visibility:hidden");
+        document.querySelector(".tick").setAttribute("style", "margin:0px");
+      };
+      
+      
       function handleTickInit(tick) {
         // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
