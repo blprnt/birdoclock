@@ -314,7 +314,7 @@
       </div>
     </div>
 
-    <div class="footer">
+    <div class="footer" id ="footy">
       Built by <a href="https://twitter.com/blprnt">Jer Thorp</a> using
       <a href="https://twitter.com/blprnt">Glitch</a>. View or remix the code
       <a href="https://glitch.com/edit/#!/bird-oclock">here</a>.
@@ -509,8 +509,13 @@
         console.log("go fullscreen");
         var elem = document.documentElement;
         elem.requestFullscreen();
-        document.getElementById("controls").setAttribute("style", "visibility:hidden");
-        document.querySelector(".tick").setAttribute("style", "margin:0px");
+        document.getElementById("controls").style.visibility = "hidden";
+        document.querySelector(".tick").style.margin = "0px";
+        document.querySelectorAll(".tick-flip").forEach(function(el) {
+          el.style.height = "95vh";
+          el.style.marginLeft = "0px";
+        });
+        
       };
       
       
