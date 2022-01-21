@@ -1,5 +1,9 @@
-# p5.js
+# Bird O'Clock!
 
-[p5.js](https://p5js.org/) is a JS client-side library for creating graphic and interactive experiences, based on the core principles of Processing.
+It's a clock!
 
-This is a simple template that points to the most recent P5.js versions via a CDN. 
+The numbers are from *actual people* counting *actual birds* in the *actual world*!
+
+Data from the [eBird API](https://documenter.getpostman.com/view/664302/S1ENwy59) and WikiData.
+
+-Jer Thorp
