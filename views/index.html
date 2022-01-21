@@ -458,6 +458,7 @@
       function setText(id) {
         console.log("SETTING TEXT:" + timeMap[id].species);
         let time = timeMap[id].ago;
+        if (!time) time = "Not too long ago"
         let num = timeMap[id].time;
         let species = timeMap[id].species;
         document.getElementById("intro").innerHTML =
@@ -485,7 +486,6 @@
       function handleTickInit(tick) {
         // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
-
           changeTime();
           var d = Tick.helper.date();
           var h = d.getHours() ;
@@ -510,6 +510,7 @@
       var start = true;
 
       function changeTime() {
+        
         var now = new Date();
         if (now.getHours() != lastTime.getHours() || start) {
           fetch("/birdNum?num=" + now.getHours()) // Call the fetch function passing the url of the API as a parameter
@@ -537,6 +538,7 @@
         }
         if (now.getSeconds() != lastTime.getSeconds() || start) {
           //current
+          
           fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
               response.text().then(function (text) {
@@ -717,7 +719,9 @@
           }
         );
         
-        if (!introed && section == 'hours') startIntro();
+        if (!introed) {
+          startIntro();
+        }
       }
     </script>
   </body>
