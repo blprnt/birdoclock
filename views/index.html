@@ -5,7 +5,10 @@
 <html>
   <head>
     <title>It's Bird O'Clock!</title>
-    <meta name="description" content="It's a clock! That tells time with counts of birds! It's silly!" />
+    <meta
+      name="description"
+      content="It's a clock! That tells time with counts of birds! It's silly!"
+    />
     <link
       href="https://unpkg.com/@pqina/flip/dist/flip.min.css"
       rel="stylesheet"
@@ -68,8 +71,8 @@
 
       body {
         background-color: rgb(255, 255, 255) !important;
-        min-width:1000px;
-        overflow:hidden;
+        min-width: 1000px;
+        overflow: hidden;
       }
 
       .tick-text-inline {
@@ -141,13 +144,13 @@
         color: white;
 
         z-index: 2;
-        
-        pointer-events:auto;
-        cursor:pointer;
+
+        pointer-events: auto;
+        cursor: pointer;
       }
-      
+
       .species:hover {
-        color:#FFFFFF99;
+        color: #ffffff99;
       }
 
       .latin {
@@ -182,18 +185,18 @@
         font-weight: 300;
 
         text-indent: 0px;
-        
-        pointer-events:auto;
-        cursor:pointer;
+
+        pointer-events: auto;
+        cursor: pointer;
       }
-      
+
       .since:hover {
-        color:#FFFFFF99;
+        color: #ffffff99;
       }
-      
+
       .tickBox {
-        width:80vw;
-        min-width:1000px;
+        width: 80vw;
+        min-width: 1000px;
       }
 
       .mapBox {
@@ -220,13 +223,13 @@
         cursor: pointer;
         letter-spacing: -0.1em;
         opacity: 0.6;
-        z-index:10;
-        pointer-events:auto;
+        z-index: 10;
+        pointer-events: auto;
       }
 
       .switchButton:hover {
         opacity: 1;
-        pointer-events:auto;
+        pointer-events: auto;
       }
 
       #wrapper {
@@ -253,10 +256,10 @@
         opacity: 0;
       }
       .clockBlock {
-        display:block;
+        display: block;
         opacity: 0;
       }
-      
+
       .footer {
         display: block;
         right: 2vw;
@@ -265,14 +268,13 @@
         text-align: right;
         font-family: Outfit, arial, sans-serif;
         font-size: 1.5vw;
-        color: #CCBBCC;
+        color: #ccbbcc;
       }
-      
+
       .footer a {
-        color: #AA99AA;
-        text-decoration:none;
+        color: #aa99aa;
+        text-decoration: none;
       }
-      
     </style>
 
     <div id="controls">
@@ -280,11 +282,9 @@
       <div id="three" class="switchButton">⬜ ⬜ ⬜</div>
     </div>
 
-    <div id="intro">
-    </div>
-    
+    <div id="intro"></div>
+
     <div id="wrapper">
-      
       <div class="tick" data-did-init="handleTickInit">
         <div data-layout="horizontal fit" id="tickBox">
           <span
@@ -301,169 +301,189 @@
             class="clockBlock"
           ></span>
 
-            <span
-              id="secs"
-              data-key="seconds"
-              data-view="flip"
-              class="clockBlock"
-            ></span>
-        
+          <span
+            id="secs"
+            data-key="seconds"
+            data-view="flip"
+            class="clockBlock"
+          ></span>
         </div>
       </div>
-      
     </div>
-    
+
     <div class="footer">
-      Built by <a href="https://twitter.com/blprnt">Jer Thorp</a> using <a href="https://twitter.com/blprnt">Glitch</a>. View or remix the code <a href="https://glitch.com/edit/#!/bird-oclock">here</a>.
-      </div>
-    
+      Built by <a href="https://twitter.com/blprnt">Jer Thorp</a> using
+      <a href="https://twitter.com/blprnt">Glitch</a>. View or remix the code
+      <a href="https://glitch.com/edit/#!/bird-oclock">here</a>.
+    </div>
+
     <script>
       //intro
       var introed = false;
-      function startIntro () {
+      function startIntro() {
         introed = true;
         console.log("INTRO! Queue fireworks!");
         var tl = anime.timeline({
-          easing: "easeOutExpo"
+          easing: "easeOutExpo",
         });
         tl.add({
           targets: "#intro",
           opacity: 1,
-          left:"40vw",
-          duration:5000,
-          begin:function() {
+          left: "40vw",
+          duration: 5000,
+          begin: function () {
             setText("hours");
-          }
+          },
         })
-        .add({
-          targets: "#hours",
-          opacity:"1",
-          duration:1500
-          
-        },"-=2000")
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:100
-        })
-        .add({
-          targets: "#intro",
-          left:"65vw",
-          duration:5000,
-          opacity:1,
-          begin:function() {
-            setText("mins");
-          }
-        })
-        .add({
-          targets: "#mins",
-          opacity:"1",
-          duration:1500
-        },"-=3000")
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:100
-        })
-        .add({
-          targets: "#intro",
-          opacity:1,
-          duration:900,
-          begin:function() {
-            setText("secs");
-          }
-        })
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:50,
-        })
-        .add({
-          targets: "#intro",
-          opacity:1,
-          duration:950,
-          begin:function() {
-            setText("secs");
-          }
-        })
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:50,
-        })
-        .add({
-          targets: "#intro",
-          opacity:1,
-          duration:950,
-          begin:function() {
-            setText("secs");
-          }
-        })
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:50,
-        })
-        .add({
-          targets: "#intro",
-          opacity:1,
-          duration:950,
-          begin:function() {
-            setText("secs");
-          }
-        })
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:50,
-        })
-        .add({
-          targets: "#intro",
-          opacity:1,
-          duration:950,
-          begin:function() {
-            setText("secs");
-          }
-        })
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:50,
-        })
-        .add({
-          targets: "#intro",
-          opacity:1,
-          duration:950,
-          begin:function() {
-            setText("secs");
-          }
-        })
-        .add({
-          targets: "#intro",
-          opacity:0,
-          duration:50,
-        })
-        .add({
-          targets: "#secs",
-          opacity:1,
-          duration:1500,
-          complete: function() {
-            document.querySelector("#intro").remove();
-          }
-        }, "-=500")
-          
-      };
-      
-      //text switching 
+          .add(
+            {
+              targets: "#hours",
+              opacity: "1",
+              duration: 1500,
+            },
+            "-=2000"
+          )
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 100,
+          })
+          .add({
+            targets: "#intro",
+            left: "65vw",
+            duration: 5000,
+            opacity: 1,
+            begin: function () {
+              setText("mins");
+            },
+          })
+          .add(
+            {
+              targets: "#mins",
+              opacity: "1",
+              duration: 1500,
+            },
+            "-=3000"
+          )
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 100,
+          })
+          .add({
+            targets: "#intro",
+            opacity: 1,
+            duration: 900,
+            begin: function () {
+              setText("secs");
+            },
+          })
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 50,
+          })
+          .add({
+            targets: "#intro",
+            opacity: 1,
+            duration: 950,
+            begin: function () {
+              setText("secs");
+            },
+          })
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 50,
+          })
+          .add({
+            targets: "#intro",
+            opacity: 1,
+            duration: 950,
+            begin: function () {
+              setText("secs");
+            },
+          })
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 50,
+          })
+          .add({
+            targets: "#intro",
+            opacity: 1,
+            duration: 950,
+            begin: function () {
+              setText("secs");
+            },
+          })
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 50,
+          })
+          .add({
+            targets: "#intro",
+            opacity: 1,
+            duration: 950,
+            begin: function () {
+              setText("secs");
+            },
+          })
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 50,
+          })
+          .add({
+            targets: "#intro",
+            opacity: 1,
+            duration: 950,
+            begin: function () {
+              setText("secs");
+            },
+          })
+          .add({
+            targets: "#intro",
+            opacity: 0,
+            duration: 50,
+          })
+          .add(
+            {
+              targets: "#secs",
+              opacity: 1,
+              duration: 1500,
+              complete: function () {
+                document.querySelector("#intro").remove();
+              },
+            },
+            "-=500"
+          );
+      }
+
+      //text switching
       function setText(id) {
         console.log("SETTING TEXT:" + timeMap[id].species);
         let time = timeMap[id].ago;
-        if (!time) time = "Not too long ago"
+        if (!time) time = "Not too long ago";
         let num = timeMap[id].time;
         let species = timeMap[id].species;
-        document.getElementById("intro").innerHTML =
-          time + " someone " + (id == "hours" ? "out there in the world":"") + " counted " +
-          "<span style='color:" + timeMap[id].color + "'>" + num + " " + species + "<span>."
+        if (num == 59) { 
+          document.getElementById("intro").innerHTML = "For some reason no one every counts 59 birds. But let's not dwell on that."
+        } else {
+          document.getElementById("intro").innerHTML =
+            time +
+            " someone " +
+            (id == "hours" ? "out there in the world" : "") +
+            " counted " +
+            "<span style='color:" +
+            timeMap[id].color +
+            "'>" +
+            num +
+            " " +
+            species +
+            "<span>.";
+        }
       }
       //interface logic
       document.getElementById("two").onclick = function () {
@@ -481,23 +501,20 @@
           .setAttribute("style", "visibility:visible; opacity:1");
         document.getElementById("wrapper").setAttribute("style", "left:0px");
       };
-      
 
       function handleTickInit(tick) {
         // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
           changeTime();
           var d = Tick.helper.date();
-          var h = d.getHours() ;
+          var h = d.getHours();
           var m = d.getMinutes();
           var s = d.getSeconds();
           tick.value = {
             sep: ".",
             hours: h < 10 ? "0" + h : h,
-            minutes:
-              m < 10 ? "0" + m : m,
-            seconds:
-              s < 10 ? "0" + s : s,
+            minutes: m < 10 ? "0" + m : m,
+            seconds: s < 10 ? "0" + s : s,
           };
           timeMap.hours.time = h;
           timeMap.secs.time = s;
@@ -510,7 +527,6 @@
       var start = true;
 
       function changeTime() {
-        
         var now = new Date();
         if (now.getHours() != lastTime.getHours() || start) {
           fetch("/birdNum?num=" + now.getHours()) // Call the fetch function passing the url of the API as a parameter
@@ -538,7 +554,7 @@
         }
         if (now.getSeconds() != lastTime.getSeconds() || start) {
           //current
-          
+
           fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
             .then(function (response) {
               response.text().then(function (text) {
@@ -570,9 +586,8 @@
         start = false;
       }
 
-      
-      var timeMap = {hours:{}, mins:{}, secs:{}};
-      
+      var timeMap = { hours: {}, mins: {}, secs: {} };
+
       function placeBird(section, bird) {
         document
           .querySelector("#" + section)
@@ -596,11 +611,11 @@
         newDiv.innerHTML = bird.comName;
         timeMap[section].species = bird.comName;
         infoBox.appendChild(newDiv);
-        newDiv.setAttribute("data-bird", bird.speciesCode)
-        newDiv.onclick = function() {
+        newDiv.setAttribute("data-bird", bird.speciesCode);
+        newDiv.onclick = function () {
           console.log("CLOICK");
           window.open("https://ebird.org/species/" + this.dataset.bird);
-        }
+        };
 
         const latinDiv = document.createElement("div");
 
@@ -614,8 +629,19 @@
 
         //how many hours ago?
         const since = now.getTime() - then.getTime();
-        const sinceHours = Math.round(since / (1000 * 60 * 60)) + 5;
-        if (sinceHours < 0) sinceHours = 0;
+        let sinceHours = Math.round(since / (1000 * 60 * 60)) + 5;
+        console.log(bird.comName + ":" + sinceHours);
+        if (sinceHours < 0) {
+          try {
+          console.log("negative hours");
+          sinceHours = 0;
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        console.log(bird.comName + ":" + sinceHours);
+
+        
 
         const colors = [
           "#26AE25",
@@ -635,17 +661,17 @@
           "background-color:" + colors[ci] + " !important;"
         );
         timeMap[section].color = colors[ci];
-        
+
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
         sinceDiv.innerHTML = sinceMsg;
-        
+
         if (bird.subId) {
-          sinceDiv.setAttribute("data-sub", bird.subId)
-          sinceDiv.onclick = function() {
+          sinceDiv.setAttribute("data-sub", bird.subId);
+          sinceDiv.onclick = function () {
             console.log("CLOICK");
             window.open("https://ebird.org/checklist/" + this.dataset.sub);
-          }
+          };
         }
         timeMap[section].ago = sinceMsg;
 
@@ -718,7 +744,7 @@
               .attr("fill-opacity", 0.4);
           }
         );
-        
+
         if (!introed) {
           startIntro();
         }
