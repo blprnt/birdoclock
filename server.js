@@ -7,9 +7,12 @@ var app = express();
 const request = require("request");
 var fs = require("fs");
 const fetch = require("node-fetch2");
+require('dotenv').config()
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static("views"));
+
+console.log(process.env);
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
@@ -48,6 +51,7 @@ function buildMap() {
     for (let j = 0; j < rack[i].length; j++) {
       let sn = rack[i][j].speciesCode;
       if (!imageSet[sn] && imageQ.indexOf(sn) == -1) {
+        console.log(sn);
         imageQ.push(sn);
       }
       obsMap[rack[i][j].comName + rack[i][j].locId] = true;
@@ -141,7 +145,7 @@ function getRecentBirds() {
       "&mess=" +
       Math.random(),
     headers: {
-      "X-eBirdApiToken": process.env.EBIRDKEY,
+      "X-eBirdApiToken": process.env.EBIRDKEY
     },
   };
 
