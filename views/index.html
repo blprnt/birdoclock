@@ -1,6 +1,3 @@
-<!-- This is a static file -->
-<!-- served from your routes in server.js -->
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -30,8 +27,6 @@
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Monoton&display=swap");
     </style>
-    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/addons/p5.dom.js"></script-->
-    <!--script src="/sketch.js"></script-->
   </head>
   <body>
     <style>
@@ -324,8 +319,74 @@
     </div>
 
     <script>
-      //intro
+      // Global state
       var introed = false;
+      var lastTime = new Date(0);
+      var start = true;
+      var timeMap = { hours: {}, mins: {}, secs: {} };
+      
+      // Fallback data for when API fails
+      var fallbackBirds = [];
+      for(let i = 0; i < 60; i++) {
+        fallbackBirds.push({
+          comName: "No recent counts of " + i + " birds",
+          sciName: "",
+          speciesCode: "nodata" + i,
+          image: "https://cdn.glitch.global/785f3f5b-0e4b-460a-a945-ee588d6763ce/birdWhiteFade.png?v=1642774437036",
+          lat: 40.7128,
+          lng: -74.0060,
+          obsDt: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          subId: null
+        });
+      }
+
+      // Improved bird fetching with fallbacks
+      function fetchBirdSafely(num, callback) {
+        const timeout = setTimeout(() => {
+          console.log("API timeout for bird " + num + ", using fallback");
+          callback(fallbackBirds[num]);
+        }, 3000);
+
+        fetch("/birdNum?num=" + num)
+          .then(function (response) {
+            clearTimeout(timeout);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.text();
+          })
+          .then(function (text) {
+            try {
+              var bj = JSON.parse(text);
+              if (!bj || !bj.comName || !bj.image) {
+                throw new Error('Invalid bird data');
+              }
+              
+              // Test if image loads
+              var testImg = new Image();
+              testImg.onload = function() {
+                callback(bj);
+              };
+              testImg.onerror = function() {
+                console.log("Image failed to load for bird " + num + ", using fallback");
+                var fallback = fallbackBirds[num];
+                callback(fallback);
+              };
+              testImg.src = bj.image;
+              
+            } catch (e) {
+              console.log("JSON parse error for bird " + num + ", using fallback");
+              callback(fallbackBirds[num]);
+            }
+          })
+          .catch(function (error) {
+            clearTimeout(timeout);
+            console.log("Fetch error for bird " + num + ", using fallback:", error);
+            callback(fallbackBirds[num]);
+          });
+      }
+
+      //intro
       function startIntro() {
         introed = true;
         console.log("INTRO! Queue fireworks!");
@@ -460,7 +521,10 @@
               opacity: 1,
               duration: 1500,
               complete: function () {
-                document.querySelector("#intro").remove();
+                var introEl = document.querySelector("#intro");
+                if (introEl) {
+                  introEl.remove();
+                }
               },
             },
             "-=500"
@@ -469,21 +533,29 @@
 
       //text switching
       function setText(id) {
-        console.log("SETTING TEXT:" + timeMap[id].species);
-        let time = timeMap[id].ago;
-        if (!time) time = "Not too long ago";
-        let num = timeMap[id].time;
-        let species = timeMap[id].species;
+        console.log("SETTING TEXT:" + (timeMap[id].species || "birds"));
+        let time = timeMap[id].ago || "Not too long ago";
+        let num = timeMap[id].time || 0;
+        let species = timeMap[id].species || "birds";
+        var introEl = document.getElementById("intro");
+        if (!introEl) return;
+        
+        // Skip intro text for fallback "no recent counts" birds
+        if (species && species.includes("No recent counts")) {
+          introEl.innerHTML = "Waiting for bird data...";
+          return;
+        }
+        
         if (num == 59) { 
-          document.getElementById("intro").innerHTML = "For some reason no one every counts 59 birds. But let's not dwell on that."
+          introEl.innerHTML = "For some reason no one every counts 59 birds. But let's not dwell on that."
         } else {
-          document.getElementById("intro").innerHTML =
+          introEl.innerHTML =
             time +
             " someone " +
             (id == "hours" ? "out there in the world" : "") +
             " counted " +
             "<span style='color:" +
-            timeMap[id].color +
+            (timeMap[id].color || "#26AE25") +
             "'>" +
             num +
             " " +
@@ -491,6 +563,7 @@
             "<span>.";
         }
       }
+      
       //interface logic
       document.getElementById("two").onclick = function () {
         console.log("switch to two");
@@ -511,7 +584,9 @@
       document.getElementById("full").onclick = function () {
         console.log("go fullscreen");
         var elem = document.documentElement;
-        elem.requestFullscreen();
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        }
         document.getElementById("controls").style.visibility = "hidden";
         document.getElementById("footy").style.visibility = "hidden";
         document.querySelector(".tick").style.margin = "0px";
@@ -519,7 +594,6 @@
           el.style.height = "95vh";
           el.style.marginLeft = "0px";
         });
-        
       };
       
       
@@ -543,234 +617,209 @@
         });
       }
 
-      var lastTime = new Date(0);
-      var loader = new Image();
-      var start = true;
-
       function changeTime() {
         var now = new Date();
         if (now.getHours() != lastTime.getHours() || start) {
-          fetch("/birdNum?num=" + now.getHours()) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  placeBird("hours", bj);
-                } catch (e) {}
-              });
-            })
-            .catch(function () {});
+          fetchBirdSafely(now.getHours(), function(bird) {
+            placeBird("hours", bird);
+          });
         }
         if (now.getMinutes() != lastTime.getMinutes() || start) {
-          fetch("/birdNum?num=" + now.getMinutes()) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  placeBird("mins", bj);
-                } catch (e) {}
-              });
-            })
-            .catch(function () {});
+          fetchBirdSafely(now.getMinutes(), function(bird) {
+            placeBird("mins", bird);
+          });
         }
         if (now.getSeconds() != lastTime.getSeconds() || start) {
-          //current
-
-          fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  placeBird("secs", bj);
-                } catch (e) {}
-              });
-            })
-            .catch(function () {});
-          //next
+          fetchBirdSafely(now.getSeconds(), function(bird) {
+            placeBird("secs", bird);
+          });
+          
+          // Preload next bird
           let ni = (now.getSeconds() + 5) % 60;
-          //console.log("PRELOAD " + ni);
-          fetch("/birdNum?num=" + ni) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  //placeBird("secs", bj);
-                  var pl = new Image();
-                  console.log(bj.comName);
-                  pl.src = bj.image;
-                  //console.log("PRELOAD:" + bj.image);
-                } catch (e) {}
-              });
-            })
-          
-          
-            .catch(function () {});
+          fetchBirdSafely(ni, function(bird) {
+            // Just preload, don't place
+            var pl = new Image();
+            pl.src = bird.image;
+            console.log("Preloaded: " + bird.comName);
+          });
         }
         lastTime = now;
         start = false;
       }
 
-      var timeMap = { hours: {}, mins: {}, secs: {} };
-
       function placeBird(section, bird) {
-        document
-          .querySelector("#" + section)
-          .querySelector(".tick-flip-panel-front")
-          .setAttribute("style", "background-image: url('" + bird.image + "')");
-
-        var b = document
-          .querySelector("#" + section)
-          .querySelectorAll(".tick-flip-back")[1];
-
-        b.innerHTML = "";
-
-        const infoBox = document.createElement("div");
-        infoBox.classList.add("infoBox");
-
-        b.appendChild(infoBox);
-
-        const newDiv = document.createElement("div");
-
-        newDiv.classList.add("species");
-        newDiv.innerHTML = bird.comName;
-        timeMap[section].species = bird.comName;
-        infoBox.appendChild(newDiv);
-        newDiv.setAttribute("data-bird", bird.speciesCode);
-        newDiv.onclick = function () {
-          console.log("CLOICK");
-          window.open("https://ebird.org/species/" + this.dataset.bird);
-        };
-
-        const latinDiv = document.createElement("div");
-
-        latinDiv.classList.add("latin");
-        latinDiv.innerHTML = bird.sciName;
-        infoBox.appendChild(latinDiv);
-
-        const now = new Date();
-        let dt = bird.obsDt.replaceAll(" ", "T");
-        const then = new Date(dt);
-
-        //how many hours ago?
-        const since = now.getTime() - then.getTime();
-        let sinceHours = Math.round(since / (1000 * 60 * 60)) + 5;
-        console.log(bird.comName + ":" + sinceHours);
-        if (sinceHours < 0) {
-          try {
-          console.log("negative hours");
-          sinceHours = 0;
-          } catch (e) {
-            console.log(e);
+        try {
+          // Set front panel image
+          var frontPanel = document
+            .querySelector("#" + section)
+            .querySelector(".tick-flip-panel-front");
+          
+          if (frontPanel && bird.image) {
+            frontPanel.setAttribute("style", "background-image: url('" + bird.image + "'); background-size: cover; background-position: center; border-width: 0.07em 0.07em 0.1em 0.07em; border-color: white; border-style: solid;");
           }
-        }
-        console.log(bird.comName + ":" + sinceHours);
 
-        
+          var backPanels = document
+            .querySelector("#" + section)
+            .querySelectorAll(".tick-flip-back");
 
-        const colors = [
-          "#26AE25",
-          "#009E5A",
-          "#008A77",
-          "#00757F",
-          "#005E73",
-          "#2F4858",
-        ];
+          // Use the FIRST back panel (index 0) for current content, not the second one
+          var b = backPanels && backPanels.length > 0 ? backPanels[0] : null;
+          if (!b) return;
 
-        let sinceMsg = sinceHours == 0 ? "Just now" : sinceHours + " hours ago";
-        let ci = Math.ceil(
-          Math.min(Math.pow(sinceHours, 0.33), colors.length - 1)
-        );
-        b.setAttribute(
-          "style",
-          "background-color:" + colors[ci] + " !important;"
-        );
-        timeMap[section].color = colors[ci];
+          b.innerHTML = "";
 
-        const sinceDiv = document.createElement("div");
-        sinceDiv.classList.add("since");
-        sinceDiv.innerHTML = sinceMsg;
+          const infoBox = document.createElement("div");
+          infoBox.classList.add("infoBox");
+          b.appendChild(infoBox);
 
-        if (bird.subId) {
-          sinceDiv.setAttribute("data-sub", bird.subId);
-          sinceDiv.onclick = function () {
-            console.log("CLOICK");
-            window.open("https://ebird.org/checklist/" + this.dataset.sub);
-          };
-        }
-        timeMap[section].ago = sinceMsg;
-
-        infoBox.appendChild(sinceDiv);
-
-        //where?
-        const whereDiv = document.createElement("div");
-        whereDiv.classList.add("where");
-        //whereDiv.innerHTML =
-
-        //map
-        const mapBox = document.createElement("div");
-        mapBox.classList.add("mapBox");
-
-        const mapDiv = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "svg"
-        );
-
-        infoBox.appendChild(mapBox);
-        mapBox.appendChild(mapDiv);
-        mapDiv.id = bird.subId;
-        mapDiv.classList.add("mapSvg");
-
-        //think this will redraw maps
-        var svg = d3.select("#" + bird.subId);
-
-        var width = 270;
-        var height = 300;
-
-        // Map and projection. Try:  d3.geoAiry() / d3.geoAitoff() / d3.geoArmadillo() / d3.geoAugust() / d3.geoAzimuthalEqualArea() / d3.geoAzimuthalEquidistant() and more
-        var projection = d3
-          .geoAitoff()
-          .scale(width / 1.3 / Math.PI)
-          .translate([width / 2, height / 2]);
-
-        //pointer
-        var markers = [{ long: bird.lng, lat: bird.lat }];
-
-        // Load external data and boot
-        d3.json(
-          "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
-          function (data) {
-            // Draw the map
-            svg
-              .append("g")
-              .selectAll("path")
-              .data(data.features)
-              .enter()
-              .append("path")
-              .attr("fill", "#00000025")
-              .attr("d", d3.geoPath().projection(projection))
-              .style("stroke", "none");
-
-            svg
-              .selectAll("myCircles")
-              .data(markers)
-              .enter()
-              .append("circle")
-              .attr("cx", function (d) {
-                return projection([d.long, d.lat])[0];
-              })
-              .attr("cy", function (d) {
-                return projection([d.long, d.lat])[1];
-              })
-              .attr("r", 5)
-              .style("fill", "#FFFFFF99")
-              .attr("stroke", "none")
-              .attr("stroke-width", 3)
-              .attr("fill-opacity", 0.4);
+          const newDiv = document.createElement("div");
+          newDiv.classList.add("species");
+          newDiv.innerHTML = bird.comName || "Unknown Bird";
+          timeMap[section].species = bird.comName || "Unknown Bird";
+          infoBox.appendChild(newDiv);
+          
+          if (bird.speciesCode && !bird.comName.includes("No recent counts")) {
+            newDiv.setAttribute("data-bird", bird.speciesCode);
+            newDiv.onclick = function () {
+              console.log("CLICK");
+              window.open("https://ebird.org/species/" + this.dataset.bird);
+            };
           }
-        );
 
-        if (!introed) {
-          startIntro();
+          const latinDiv = document.createElement("div");
+          latinDiv.classList.add("latin");
+          latinDiv.innerHTML = bird.sciName || "";
+          infoBox.appendChild(latinDiv);
+
+          const now = new Date();
+          let dt = bird.obsDt ? bird.obsDt.replaceAll(" ", "T") : now.toISOString();
+          const then = new Date(dt);
+
+          //how many hours ago?
+          const since = now.getTime() - then.getTime();
+          let sinceHours = Math.max(0, Math.round(since / (1000 * 60 * 60)) + 5);
+          
+          console.log((bird.comName || "Unknown") + ":" + sinceHours);
+
+          const colors = [
+            "#26AE25",
+            "#009E5A",
+            "#008A77",
+            "#00757F",
+            "#005E73",
+            "#2F4858",
+          ];
+
+          let sinceMsg = sinceHours == 0 ? "Just now" : sinceHours + " hours ago";
+          let ci = Math.min(Math.ceil(Math.pow(sinceHours, 0.33)), colors.length - 1);
+          
+          b.setAttribute(
+            "style",
+            "background-color:" + colors[ci] + " !important;"
+          );
+          timeMap[section].color = colors[ci];
+
+          const sinceDiv = document.createElement("div");
+          sinceDiv.classList.add("since");
+          
+          // Only show timestamp for real bird data, not fallback
+          if (!bird.comName.includes("No recent counts")) {
+            sinceDiv.innerHTML = sinceMsg;
+            if (bird.subId) {
+              sinceDiv.setAttribute("data-sub", bird.subId);
+              sinceDiv.onclick = function () {
+                console.log("CLICK");
+                window.open("https://ebird.org/checklist/" + this.dataset.sub);
+              };
+            }
+            timeMap[section].ago = sinceMsg;
+          } else {
+            sinceDiv.innerHTML = "";
+            timeMap[section].ago = "";
+          }
+
+          infoBox.appendChild(sinceDiv);
+
+          // Create map
+          const mapBox = document.createElement("div");
+          mapBox.classList.add("mapBox");
+
+          const mapDiv = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg"
+          );
+
+          infoBox.appendChild(mapBox);
+          mapBox.appendChild(mapDiv);
+          mapDiv.id = bird.subId || 'map-' + section + '-' + Date.now();
+          mapDiv.classList.add("mapSvg");
+
+          //think this will redraw maps
+          var svg = d3.select("#" + mapDiv.id);
+
+          var width = 270;
+          var height = 300;
+
+          // Map and projection
+          var projection = d3
+            .geoAitoff()
+            .scale(width / 1.3 / Math.PI)
+            .translate([width / 2, height / 2]);
+
+          //pointer
+          var markers = [{ long: bird.lng || 0, lat: bird.lat || 0 }];
+
+          // Only load map for real bird data, not fallback
+          if (!bird.comName.includes("No recent counts")) {
+            // Load external data and boot
+            d3.json(
+              "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
+              function (data) {
+                if (!data || !data.features) {
+                  console.warn("Failed to load map data");
+                  return;
+                }
+                
+                try {
+                  // Draw the map
+                  svg
+                    .append("g")
+                    .selectAll("path")
+                    .data(data.features)
+                    .enter()
+                    .append("path")
+                    .attr("fill", "#00000025")
+                    .attr("d", d3.geoPath().projection(projection))
+                    .style("stroke", "none");
+
+                  svg
+                    .selectAll("myCircles")
+                    .data(markers)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function (d) {
+                      return projection([d.long, d.lat])[0];
+                    })
+                    .attr("cy", function (d) {
+                      return projection([d.long, d.lat])[1];
+                    })
+                    .attr("r", 5)
+                    .style("fill", "#FFFFFF99")
+                    .attr("stroke", "none")
+                    .attr("stroke-width", 3)
+                    .attr("fill-opacity", 0.4);
+                } catch (mapError) {
+                  console.warn("Error creating map:", mapError);
+                }
+              }
+            );
+          }
+
+          if (!introed) {
+            startIntro();
+          }
+        } catch (error) {
+          console.error("Error placing bird:", error);
         }
       }
     </script>
