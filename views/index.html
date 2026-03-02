@@ -128,7 +128,7 @@
       .infoBox {
         position: absolute;
         left: 0px;
-        top: 50%;     /* bottom half of the clockBlock */
+        top: 50%;     /* bottom half of .tick-flip */
         width: 85%;
         height: 50%;
         margin-top: 0.1em;
@@ -267,7 +267,6 @@
       .clockBlock {
         display: block;
         opacity: 0;
-        position: relative; /* allows absolute-positioned infoBox to be contained here */
       }
 
       .footer {
@@ -711,6 +710,7 @@
 
         infoBox.appendChild(mapBox);
         mapBox.appendChild(mapDiv);
+        mapDiv.setAttribute("viewBox", "0 0 270 300");
         mapDiv.classList.add("mapSvg");
 
         var svg = d3.select(mapDiv);
@@ -760,17 +760,17 @@
             .catch(function() {});
         }
 
-        // Attach infoBox directly to the section element (outside .tick-flip so the
-        // library can't touch it). Poll until the library has rendered its elements.
+        // Append infoBox to .tick-flip (sibling of the flip panels) so the library
+        // can't remove it. Poll until the library has rendered its elements.
         (function attachInfoBox() {
           var se = document.querySelector("#" + section);
-          if (!se || !se.querySelector(".tick-flip")) {
-            requestAnimationFrame(attachInfoBox);
-            return;
-          }
-          var old = se.querySelector(".infoBox");
+          var backs = se ? se.querySelectorAll(".tick-flip-back") : [];
+          var b = backs[backs.length - 1];
+          if (!b || !b.parentElement) { requestAnimationFrame(attachInfoBox); return; }
+          var flip = b.parentElement; // .tick-flip
+          var old = flip.querySelector(".infoBox");
           if (old) old.remove();
-          se.appendChild(infoBox);
+          flip.appendChild(infoBox);
           if (!introed) startIntro();
         })();
       }
