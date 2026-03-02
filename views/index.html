@@ -617,21 +617,9 @@
           }
         })();
 
-        // Attach the infoBox to the .tick-flip wrapper (units digit), NOT inside
-        // .tick-flip-back — the library manages that element and its panels
-        // will always end up covering anything we append there.
-        const sectionEl2 = document.querySelector("#" + section);
-        const flipCards = sectionEl2.querySelectorAll(".tick-flip");
-        const unitsFlip = flipCards[flipCards.length - 1];
-        if (!unitsFlip) return;
-
-        const oldInfoBox = unitsFlip.querySelector(".infoBox");
-        if (oldInfoBox) oldInfoBox.remove();
-
+        // Build the infoBox on a detached element — safe to do before Tick renders
         const infoBox = document.createElement("div");
         infoBox.classList.add("infoBox");
-
-        unitsFlip.appendChild(infoBox);
 
         const newDiv = document.createElement("div");
 
@@ -770,9 +758,18 @@
           }
         );
 
-        if (!introed) {
-          startIntro();
-        }
+        // Poll until the Tick library has rendered .tick-flip elements, then attach.
+        // fetchAllBirds() can run before Tick initialises, so we can't assume they exist yet.
+        (function attachInfoBox() {
+          var se = document.querySelector("#" + section);
+          var cards = se ? se.querySelectorAll(".tick-flip") : [];
+          var unitsFlip = cards[cards.length - 1];
+          if (!unitsFlip) { requestAnimationFrame(attachInfoBox); return; }
+          var old = unitsFlip.querySelector(".infoBox");
+          if (old) old.remove();
+          unitsFlip.appendChild(infoBox);
+          if (!introed) startIntro();
+        })();
       }
 
       // Load all birds at startup, then refresh every 60 seconds
