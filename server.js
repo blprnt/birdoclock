@@ -185,22 +185,19 @@ function fileBirds(birds) {
 }
 
 function getBirdNum(n) {
-  
+  if (!rack[n] || rack[n].length === 0) return null;
   let nb = rack[n][Math.floor(Math.random() * rack[n].length)];
-  if (nb) {
-  //console.log("GET BIRD NUM:" + nb.speciesCode + ":" + imageSet[nb.speciesCode])
-  if (nb && imageSet[nb.speciesCode]) {
-    
-    //console.log("APPEND IMAGE")
-    let img = imageSet[nb.speciesCode].image;
+  if (!nb) return null;
+  let result = Object.assign({}, nb); // clone to avoid mutating the rack
+  if (imageSet[result.speciesCode]) {
+    let img = imageSet[result.speciesCode].image;
     let w = 500;
-    nb.image = img.replace(
-          "http://commons.wikimedia.org/wiki/Special:FilePath/",
-          "https://commons.wikimedia.org/w/thumb.php?width=" + w + "&f="
-        );
+    result.image = img.replace(
+      "http://commons.wikimedia.org/wiki/Special:FilePath/",
+      "https://commons.wikimedia.org/w/thumb.php?width=" + w + "&f="
+    );
   }
-  }
-  return nb;
+  return result;
 }
 
 function getBirdOclock(h, m, s) {
@@ -334,6 +331,14 @@ function getWikiData(_bird, lang) {
 app.get("/birdNum", (req, res) => {
   var num = req.query.num;
   res.send(getBirdNum(num));
+});
+
+app.get("/allBirds", (req, res) => {
+  let birds = [];
+  for (let i = 0; i <= 60; i++) {
+    birds[i] = getBirdNum(i);
+  }
+  res.json(birds);
 });
 
 //buildRack();

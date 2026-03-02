@@ -548,70 +548,39 @@
       }
 
       var lastTime = new Date(0);
-      var loader = new Image();
-      var start = true;
+      var birdCache = {};
+      var imageCache = []; // keep Image objects referenced so they aren't GC'd
+
+      function fetchAllBirds() {
+        fetch("/allBirds")
+          .then(function(response) { return response.json(); })
+          .then(function(birds) {
+            imageCache = [];
+            for (var i = 0; i < birds.length; i++) {
+              if (birds[i]) {
+                birdCache[i] = birds[i];
+                if (birds[i].image) {
+                  var img = new Image();
+                  img.src = birds[i].image;
+                  imageCache.push(img);
+                }
+              }
+            }
+            // Place current time immediately after loading
+            var now = new Date();
+            if (birdCache[now.getHours()])   placeBird("hours", birdCache[now.getHours()]);
+            if (birdCache[now.getMinutes()]) placeBird("mins",  birdCache[now.getMinutes()]);
+            if (birdCache[now.getSeconds()]) placeBird("secs",  birdCache[now.getSeconds()]);
+          })
+          .catch(function() {});
+      }
 
       function changeTime() {
         var now = new Date();
-        if (now.getHours() != lastTime.getHours() || start) {
-          fetch("/birdNum?num=" + now.getHours()) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  placeBird("hours", bj);
-                } catch (e) {}
-              });
-            })
-            .catch(function () {});
-        }
-        if (now.getMinutes() != lastTime.getMinutes() || start) {
-          fetch("/birdNum?num=" + now.getMinutes()) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  placeBird("mins", bj);
-                } catch (e) {}
-              });
-            })
-            .catch(function () {});
-        }
-        if (now.getSeconds() != lastTime.getSeconds() || start) {
-          //current
-
-          fetch("/birdNum?num=" + now.getSeconds()) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  placeBird("secs", bj);
-                } catch (e) {}
-              });
-            })
-            .catch(function () {});
-          //next
-          let ni = (now.getSeconds() + 5) % 60;
-          //console.log("PRELOAD " + ni);
-          fetch("/birdNum?num=" + ni) // Call the fetch function passing the url of the API as a parameter
-            .then(function (response) {
-              response.text().then(function (text) {
-                try {
-                  var bj = JSON.parse(text);
-                  //placeBird("secs", bj);
-                  var pl = new Image();
-                  console.log(bj.comName);
-                  pl.src = bj.image;
-                  //console.log("PRELOAD:" + bj.image);
-                } catch (e) {}
-              });
-            })
-          
-          
-            .catch(function () {});
-        }
+        if (now.getHours()   != lastTime.getHours()   && birdCache[now.getHours()])   placeBird("hours", birdCache[now.getHours()]);
+        if (now.getMinutes() != lastTime.getMinutes() && birdCache[now.getMinutes()]) placeBird("mins",  birdCache[now.getMinutes()]);
+        if (now.getSeconds() != lastTime.getSeconds() && birdCache[now.getSeconds()]) placeBird("secs",  birdCache[now.getSeconds()]);
         lastTime = now;
-        start = false;
       }
 
       var timeMap = { hours: {}, mins: {}, secs: {} };
@@ -802,6 +771,10 @@
           startIntro();
         }
       }
+
+      // Load all birds at startup, then refresh every 60 seconds
+      fetchAllBirds();
+      setInterval(fetchAllBirds, 60000);
     </script>
   </body>
 </html>
