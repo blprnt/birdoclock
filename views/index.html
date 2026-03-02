@@ -109,10 +109,10 @@
 
       .tick-flip-panel-front {
         background-size: cover;
+        background-position: center;
         border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color: white;
         border-style: solid;
-        background-image:url("https://cdn.glitch.global/785f3f5b-0e4b-460a-a945-ee588d6763ce/birdWhiteFade.png?v=1642774437036");
       }
 
       .tick-flip {
@@ -621,24 +621,23 @@
           .setAttribute("style", "background-image: url('" + bird.image + "')");
           */
 
-        // Wait until .tick-flip-panel-front exists before setting the background
+        // Wait until .tick-flip-panel-front panels exist, then set background on all of them
+        // (the flip library creates multiple panels per digit for its animation)
         (function waitForPanel(){
-          const panel = document
-            .querySelector("#" + section)
-            .querySelector(".tick-flip-panel-front");
-          if (panel) {
-            // Fallback image if none provided
-            const imgUrl = bird.image && bird.image.trim() !== "" 
-              ? bird.image 
-              : "https://cdn.glitch.global/785f3f5b-0e4b-460a-a945-ee588d6763ce/birdWhiteFade.png?v=1642774437036";
-            panel.setAttribute("style", "background-image: url('" + imgUrl + "')");
-            
-            // Also handle broken images by checking load/error
-            const testImg = new Image();
-            testImg.onerror = function(){
-              panel.setAttribute("style", "background-image: url('https://cdn.glitch.global/785f3f5b-0e4b-460a-a945-ee588d6763ce/birdWhiteFade.png?v=1642774437036')");
-            };
-            testImg.src = imgUrl;
+          const sectionEl = document.querySelector("#" + section);
+          const panels = sectionEl ? sectionEl.querySelectorAll(".tick-flip-panel-front") : [];
+          if (panels.length > 0) {
+            function applyImg(url) {
+              panels.forEach(function(p) {
+                p.style.backgroundImage = url ? "url('" + url + "')" : "";
+              });
+            }
+            if (bird.image && bird.image.trim() !== "") {
+              const testImg = new Image();
+              testImg.onload = function() { applyImg(bird.image); };
+              testImg.onerror = function() { applyImg(""); };
+              testImg.src = bird.image;
+            }
           } else {
             requestAnimationFrame(waitForPanel);
           }
