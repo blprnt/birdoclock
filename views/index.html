@@ -117,7 +117,6 @@
       }
 
       .tick-flip {
-        position: relative !important; /* ensures infoBox positions inside this element */
         border-radius: 0em !important;
         height: 3em;
       }
@@ -758,13 +757,15 @@
           }
         );
 
-        // Poll until the Tick library has rendered .tick-flip elements, then attach.
-        // fetchAllBirds() can run before Tick initialises, so we can't assume they exist yet.
+        // Poll until the Tick library has rendered its elements, then attach.
+        // Use .tick-flip-back (which the library reliably creates) and walk up to
+        // its parentElement (.tick-flip) rather than querying .tick-flip directly.
         (function attachInfoBox() {
           var se = document.querySelector("#" + section);
-          var cards = se ? se.querySelectorAll(".tick-flip") : [];
-          var unitsFlip = cards[cards.length - 1];
-          if (!unitsFlip) { requestAnimationFrame(attachInfoBox); return; }
+          var backs = se ? se.querySelectorAll(".tick-flip-back") : [];
+          var b = backs[backs.length - 1];
+          if (!b || !b.parentElement) { requestAnimationFrame(attachInfoBox); return; }
+          var unitsFlip = b.parentElement;
           var old = unitsFlip.querySelector(".infoBox");
           if (old) old.remove();
           unitsFlip.appendChild(infoBox);
