@@ -107,14 +107,10 @@
         
       }
 
-      .tick-flip-panel-front,
-      .tick-flip-panel-back {
+      .tick-flip-panel-front {
         background-image: var(--bird-image, none);
         background-size: cover;
         background-position: center;
-      }
-
-      .tick-flip-panel-front {
         border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color: white;
         border-style: solid;
@@ -134,6 +130,7 @@
         margin-top: 0.1em;
         margin-left: 0.1em;
         margin-right: 0.2em;
+        z-index: 10;
       }
 
       .species {
@@ -623,7 +620,10 @@
           .querySelector("#" + section)
           .querySelectorAll(".tick-flip-back")[1];
 
-        b.innerHTML = "";
+        // Only remove the old infoBox — don't clear the whole container,
+        // as that destroys the flip library's panel elements
+        const oldInfoBox = b.querySelector(".infoBox");
+        if (oldInfoBox) oldInfoBox.remove();
 
         const infoBox = document.createElement("div");
         infoBox.classList.add("infoBox");
