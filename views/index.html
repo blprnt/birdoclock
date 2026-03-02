@@ -134,6 +134,8 @@
         margin-top: 0.1em;
         margin-left: 0.1em;
         z-index: 100; /* above .tick-flip-card (z-index:1) and all panels */
+        opacity: 0;
+        transition: opacity 0.3s ease 0.55s; /* delay matches flip animation */
         pointer-events: none;
       }
 
@@ -603,23 +605,12 @@
           */
 
         // Set --bird-image CSS variable on the section element so it cascades to
-        // all panels (top + bottom halves, including any created during animation)
-        (function() {
-          const sectionEl = document.querySelector("#" + section);
-          if (!sectionEl) return;
-          if (bird.image && bird.image.trim() !== "") {
-            const testImg = new Image();
-            testImg.onload = function() {
-              sectionEl.style.setProperty("--bird-image", "url(\"" + bird.image + "\")");
-            };
-            testImg.onerror = function() {
-              sectionEl.style.setProperty("--bird-image", "none");
-            };
-            testImg.src = bird.image;
-          } else {
-            sectionEl.style.setProperty("--bird-image", "none");
-          }
-        })();
+        // all .tick-flip-front .tick-flip-panel-front panels automatically.
+        var sectionEl = document.querySelector("#" + section);
+        if (sectionEl) {
+          sectionEl.style.setProperty("--bird-image",
+            bird.image ? "url(\"" + bird.image + "\")" : "none");
+        }
 
         // Build the infoBox on a detached element — safe to do before Tick renders
         const infoBox = document.createElement("div");
@@ -771,6 +762,14 @@
           var old = flip.querySelector(".infoBox");
           if (old) old.remove();
           flip.appendChild(infoBox);
+          // Two rAFs ensure the browser paints opacity:0 first, then the
+          // CSS transition (with its 0.55s delay) takes it to opacity:1 —
+          // so the flip animation plays out before the bird info appears.
+          requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+              infoBox.style.opacity = "1";
+            });
+          });
           if (!introed) startIntro();
         })();
       }
