@@ -108,12 +108,16 @@
       }
 
       .tick-flip-panel-front {
-        background-image: var(--bird-image, none);
-        background-size: cover;
-        background-position: center;
         border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color: white;
         border-style: solid;
+      }
+
+      /* Bird image only on the top-half panels — bottom half shows bird info */
+      .tick-flip-front .tick-flip-panel-front {
+        background-image: var(--bird-image, none);
+        background-size: cover;
+        background-position: center;
       }
 
       .tick-flip {
@@ -124,12 +128,12 @@
       .infoBox {
         position: absolute;
         left: 0px;
-        top: 50%;           /* start at the fold, covering the bottom half */
+        top: 50%;     /* bottom half of the clockBlock */
         width: 85%;
         height: 50%;
         margin-top: 0.1em;
         margin-left: 0.1em;
-        z-index: 20;        /* above all flip library panels */
+        z-index: 100; /* above .tick-flip-card (z-index:1) and all panels */
         pointer-events: none;
       }
 
@@ -263,6 +267,7 @@
       .clockBlock {
         display: block;
         opacity: 0;
+        position: relative; /* allows absolute-positioned infoBox to be contained here */
       }
 
       .footer {
@@ -552,6 +557,7 @@
       var lastTime = new Date(0);
       var birdCache = {};
       var imageCache = []; // keep Image objects referenced so they aren't GC'd
+      var worldGeojson = null; // cached world map data
 
       function fetchAllBirds() {
         fetch("/allBirds")
@@ -705,11 +711,9 @@
 
         infoBox.appendChild(mapBox);
         mapBox.appendChild(mapDiv);
-        mapDiv.id = bird.subId;
         mapDiv.classList.add("mapSvg");
 
-        //think this will redraw maps
-        var svg = d3.select("#" + bird.subId);
+        var svg = d3.select(mapDiv);
 
         var width = 270;
         var height = 300;
@@ -723,52 +727,50 @@
         //pointer
         var markers = [{ long: bird.lng, lat: bird.lat }];
 
-        // Load external data and boot
-        d3.json(
-          "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson",
-          function (data) {
-            // Draw the map
-            svg
-              .append("g")
-              .selectAll("path")
-              .data(data.features)
-              .enter()
-              .append("path")
-              .attr("fill", "#00000025")
-              .attr("d", d3.geoPath().projection(projection))
-              .style("stroke", "none");
+        // Draw world map onto svg selection with cached GeoJSON
+        var renderGeoMap = function(data) {
+          svg
+            .append("g")
+            .selectAll("path")
+            .data(data.features)
+            .enter()
+            .append("path")
+            .attr("fill", "#00000025")
+            .attr("d", d3.geoPath().projection(projection))
+            .style("stroke", "none");
+          svg
+            .selectAll("myCircles")
+            .data(markers)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) { return projection([d.long, d.lat])[0]; })
+            .attr("cy", function(d) { return projection([d.long, d.lat])[1]; })
+            .attr("r", 5)
+            .style("fill", "#FFFFFF99")
+            .attr("stroke", "none")
+            .attr("stroke-width", 3)
+            .attr("fill-opacity", 0.4);
+        };
+        if (worldGeojson) {
+          renderGeoMap(worldGeojson);
+        } else {
+          fetch("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+            .then(function(r) { return r.json(); })
+            .then(function(data) { worldGeojson = data; renderGeoMap(data); })
+            .catch(function() {});
+        }
 
-            svg
-              .selectAll("myCircles")
-              .data(markers)
-              .enter()
-              .append("circle")
-              .attr("cx", function (d) {
-                return projection([d.long, d.lat])[0];
-              })
-              .attr("cy", function (d) {
-                return projection([d.long, d.lat])[1];
-              })
-              .attr("r", 5)
-              .style("fill", "#FFFFFF99")
-              .attr("stroke", "none")
-              .attr("stroke-width", 3)
-              .attr("fill-opacity", 0.4);
-          }
-        );
-
-        // Poll until the Tick library has rendered its elements, then attach.
-        // Use .tick-flip-back (which the library reliably creates) and walk up to
-        // its parentElement (.tick-flip) rather than querying .tick-flip directly.
+        // Attach infoBox directly to the section element (outside .tick-flip so the
+        // library can't touch it). Poll until the library has rendered its elements.
         (function attachInfoBox() {
           var se = document.querySelector("#" + section);
-          var backs = se ? se.querySelectorAll(".tick-flip-back") : [];
-          var b = backs[backs.length - 1];
-          if (!b || !b.parentElement) { requestAnimationFrame(attachInfoBox); return; }
-          var unitsFlip = b.parentElement;
-          var old = unitsFlip.querySelector(".infoBox");
+          if (!se || !se.querySelector(".tick-flip")) {
+            requestAnimationFrame(attachInfoBox);
+            return;
+          }
+          var old = se.querySelector(".infoBox");
           if (old) old.remove();
-          unitsFlip.appendChild(infoBox);
+          se.appendChild(infoBox);
           if (!introed) startIntro();
         })();
       }
