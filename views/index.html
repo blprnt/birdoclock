@@ -107,9 +107,14 @@
         
       }
 
-      .tick-flip-panel-front {
+      .tick-flip-panel-front,
+      .tick-flip-panel-back {
+        background-image: var(--bird-image, none);
         background-size: cover;
         background-position: center;
+      }
+
+      .tick-flip-panel-front {
         border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color: white;
         border-style: solid;
@@ -577,15 +582,16 @@
 
       function changeTime() {
         var now = new Date();
-        if (now.getHours()   != lastTime.getHours()   && birdCache[now.getHours()])   placeBird("hours", birdCache[now.getHours()]);
-        if (now.getMinutes() != lastTime.getMinutes() && birdCache[now.getMinutes()]) placeBird("mins",  birdCache[now.getMinutes()]);
-        if (now.getSeconds() != lastTime.getSeconds() && birdCache[now.getSeconds()]) placeBird("secs",  birdCache[now.getSeconds()]);
+        try { if (now.getHours()   != lastTime.getHours()   && birdCache[now.getHours()])   placeBird("hours", birdCache[now.getHours()]);   } catch(e) { console.warn("hours placeBird failed", e); }
+        try { if (now.getMinutes() != lastTime.getMinutes() && birdCache[now.getMinutes()]) placeBird("mins",  birdCache[now.getMinutes()]); } catch(e) { console.warn("mins placeBird failed",  e); }
+        try { if (now.getSeconds() != lastTime.getSeconds() && birdCache[now.getSeconds()]) placeBird("secs",  birdCache[now.getSeconds()]);  } catch(e) { console.warn("secs placeBird failed",  e); }
         lastTime = now;
       }
 
       var timeMap = { hours: {}, mins: {}, secs: {} };
 
       function placeBird(section, bird) {
+        if (!bird || !bird.comName || !bird.obsDt) return;
 
         /*
         document
@@ -594,25 +600,22 @@
           .setAttribute("style", "background-image: url('" + bird.image + "')");
           */
 
-        // Wait until .tick-flip-panel-front panels exist, then set background on all of them
-        // (the flip library creates multiple panels per digit for its animation)
-        (function waitForPanel(){
+        // Set --bird-image CSS variable on the section element so it cascades to
+        // all panels (top + bottom halves, including any created during animation)
+        (function() {
           const sectionEl = document.querySelector("#" + section);
-          const panels = sectionEl ? sectionEl.querySelectorAll(".tick-flip-panel-front") : [];
-          if (panels.length > 0) {
-            function applyImg(url) {
-              panels.forEach(function(p) {
-                p.style.backgroundImage = url ? "url('" + url + "')" : "";
-              });
-            }
-            if (bird.image && bird.image.trim() !== "") {
-              const testImg = new Image();
-              testImg.onload = function() { applyImg(bird.image); };
-              testImg.onerror = function() { applyImg(""); };
-              testImg.src = bird.image;
-            }
+          if (!sectionEl) return;
+          if (bird.image && bird.image.trim() !== "") {
+            const testImg = new Image();
+            testImg.onload = function() {
+              sectionEl.style.setProperty("--bird-image", "url(\"" + bird.image + "\")");
+            };
+            testImg.onerror = function() {
+              sectionEl.style.setProperty("--bird-image", "none");
+            };
+            testImg.src = bird.image;
           } else {
-            requestAnimationFrame(waitForPanel);
+            sectionEl.style.setProperty("--bird-image", "none");
           }
         })();
 
