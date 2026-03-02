@@ -117,20 +117,21 @@
       }
 
       .tick-flip {
+        position: relative !important; /* ensures infoBox positions inside this element */
         border-radius: 0em !important;
         height: 3em;
       }
 
       .infoBox {
         position: absolute;
-        display: block;
         left: 0px;
+        top: 50%;           /* start at the fold, covering the bottom half */
         width: 85%;
-        height: 100%;
+        height: 50%;
         margin-top: 0.1em;
         margin-left: 0.1em;
-        margin-right: 0.2em;
-        z-index: 10;
+        z-index: 20;        /* above all flip library panels */
+        pointer-events: none;
       }
 
       .species {
@@ -616,19 +617,21 @@
           }
         })();
 
-        var b = document
-          .querySelector("#" + section)
-          .querySelectorAll(".tick-flip-back")[1];
+        // Attach the infoBox to the .tick-flip wrapper (units digit), NOT inside
+        // .tick-flip-back — the library manages that element and its panels
+        // will always end up covering anything we append there.
+        const sectionEl2 = document.querySelector("#" + section);
+        const flipCards = sectionEl2.querySelectorAll(".tick-flip");
+        const unitsFlip = flipCards[flipCards.length - 1];
+        if (!unitsFlip) return;
 
-        // Only remove the old infoBox — don't clear the whole container,
-        // as that destroys the flip library's panel elements
-        const oldInfoBox = b.querySelector(".infoBox");
+        const oldInfoBox = unitsFlip.querySelector(".infoBox");
         if (oldInfoBox) oldInfoBox.remove();
 
         const infoBox = document.createElement("div");
         infoBox.classList.add("infoBox");
 
-        b.appendChild(infoBox);
+        unitsFlip.appendChild(infoBox);
 
         const newDiv = document.createElement("div");
 
@@ -681,10 +684,7 @@
         let ci = Math.ceil(
           Math.min(Math.pow(sinceHours, 0.33), colors.length - 1)
         );
-        b.setAttribute(
-          "style",
-          "background-color:" + colors[ci] + " !important;"
-        );
+        infoBox.style.backgroundColor = colors[ci];
         timeMap[section].color = colors[ci];
 
         const sinceDiv = document.createElement("div");
