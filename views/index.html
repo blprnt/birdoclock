@@ -681,16 +681,13 @@
         if (bird.image) {
           console.log("[img] " + section + " " + bird.comName + " -> " + bird.image.substring(0, 80));
           document.documentElement.style.setProperty('--' + section + '-img', 'url("' + bird.image + '")');
-          // Check computed style 200ms later to see if CSS is actually being applied
-          setTimeout(function() {
-            var p = document.querySelector("#" + section + " .tick-flip-panel-front");
-            if (p) {
-              var cs = window.getComputedStyle(p);
-              console.log("[css-check] " + section + " bgimg=" + cs.backgroundImage.substring(0, 80) + " size=" + cs.backgroundSize + " w=" + p.offsetWidth + " h=" + p.offsetHeight);
-            } else {
-              console.log("[css-check] " + section + " NO PANEL FOUND");
-            }
-          }, 200);
+          // Test: render image in a fixed overlay box to verify it loads in browser
+          if (section === "hours") {
+            var td = document.getElementById("imgtest") || document.createElement("div");
+            td.id = "imgtest";
+            td.style.cssText = "position:fixed;bottom:10px;right:10px;z-index:9999;width:120px;height:120px;border:3px solid red;background-image:url('" + bird.image + "');background-size:cover;background-color:#333;";
+            document.body.appendChild(td);
+          }
         } else {
           console.log("[img] " + section + " " + bird.comName + " -> NO IMAGE");
           document.documentElement.style.removeProperty('--' + section + '-img');
