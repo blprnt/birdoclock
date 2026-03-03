@@ -111,6 +111,9 @@
         border-width: 0.07em 0.07em 0.1em 0.07em;
         border-color: white;
         border-style: solid;
+        /* Transparent so the bird-photo img underneath shows through,
+           while the border and digit number still render on top */
+        background-color: transparent !important;
       }
 
       /* Fill the card background with bird color so page green never shows
@@ -121,12 +124,8 @@
         background-color: var(--bird-color, #333232);
       }
 
-      /* Hide digit text — bird image replaces the number */
-      .tick-flip-panel-front-text {
-        visibility: hidden;
-      }
-
-      /* Bird photos are applied via .bird-photo img on .tick-flip-card (not the panel) */
+      /* Bird photos are applied via .bird-photo img on .tick-flip-card (z-index:2,
+         inserted before front panel so front panel at same z-index renders on top) */
 
       .tick-flip {
         border-radius: 0em !important;
@@ -629,12 +628,14 @@
               if (!existing) {
                 existing = document.createElement('img');
                 existing.className = 'bird-photo';
-                // z-index:3 puts us above front panel (z:2) and back panel (z:1).
-                // height:51% matches the front panel so image covers only the top half.
-                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:51%;object-fit:cover;object-position:top;z-index:3;pointer-events:none;display:block;';
+                // z-index:2 matches the front panel. Inserted BEFORE the front panel
+                // so the front panel (same z-index, later in DOM) renders on top —
+                // its border and digit number stay visible over the bird photo.
+                // Front panel CSS is now transparent so the photo shows through.
+                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:51%;object-fit:cover;object-position:top;z-index:2;pointer-events:none;display:block;';
                 existing.onload = function() { console.log('[img] loaded ' + sec); };
                 existing.onerror = function() { console.log('[img] ERROR ' + this.src.substring(0, 80)); };
-                card.appendChild(existing);
+                card.insertBefore(existing, card.firstChild);
               }
               if (existing.src !== imgUrl) existing.src = imgUrl;
             } else {
