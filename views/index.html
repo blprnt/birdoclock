@@ -113,8 +113,25 @@
         border-style: solid;
       }
 
-      /* Hide the digit text on front panels when a bird image is set */
-      .tick-flip-panel-front .tick-flip-panel-front-text {
+      /* Bird image auto-cascades to any panels the library creates dynamically */
+      #hours .tick-flip-panel-front,
+      #mins  .tick-flip-panel-front,
+      #secs  .tick-flip-panel-front {
+        background-image: var(--bird-image, none);
+        background-size: cover;
+        background-position: center;
+      }
+
+      /* Fill the card background with bird color so page green never shows
+         through the backface-visibility:hidden gap during the flip animation */
+      #hours .tick-flip-card,
+      #mins  .tick-flip-card,
+      #secs  .tick-flip-card {
+        background-color: var(--bird-color, #333232);
+      }
+
+      /* Hide digit text — bird image replaces the number */
+      .tick-flip-panel-front-text {
         visibility: hidden;
       }
 
@@ -592,21 +609,6 @@
       function placeBird(section, bird) {
         if (!bird || !bird.comName || !bird.obsDt) return;
 
-        // Set image directly on all front panels
-        (function waitForPanels() {
-          var panels = document.querySelectorAll("#" + section + " .tick-flip-panel-front");
-          if (!panels.length) { requestAnimationFrame(waitForPanels); return; }
-          panels.forEach(function(p) {
-            if (bird.image) {
-              p.style.backgroundImage = "url(\"" + bird.image + "\")";
-              p.style.backgroundSize = "cover";
-              p.style.backgroundPosition = "center";
-            } else {
-              p.style.backgroundImage = "";
-            }
-          });
-        })();
-
         const infoBox = document.createElement("div");
         infoBox.classList.add("infoBox");
 
@@ -662,6 +664,15 @@
           Math.min(Math.pow(sinceHours, 0.33), colors.length - 1)
         );
         timeMap[section].color = colors[ci];
+
+        // Set CSS variables on the section — cascades to all panels including
+        // ones the library creates dynamically, and fills the backface-hidden gap
+        var sectionEl = document.querySelector("#" + section);
+        if (sectionEl) {
+          sectionEl.style.setProperty("--bird-image",
+            bird.image ? "url(\"" + bird.image + "\")" : "none");
+          sectionEl.style.setProperty("--bird-color", colors[ci]);
+        }
 
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
