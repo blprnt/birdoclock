@@ -35,203 +35,10 @@
   </head>
   <body>
     <style>
-      .tick {
-        font-size: 1rem;
-        font-family: Outfit, arial, sans-serif;
-        margin: 2vw 9vw 0vw 9vw;
-      }
-
-      .tick-flip,
-      .tick-text-inline {
-        font-size: 2.5em;
-      }
-
-      .tick-flip-spacer {
-        width: 2em;
-      }
-      .tick-label {
-        margin-top: 1em;
-        font-size: 1em;
-      }
-
-      .tick-char {
-        width: 1.5em;
-      }
-
-      .tick-text-inline {
-        display: inline-block;
-        min-width: 1em;
-      }
-
-      .tick-text-inline + .tick-text-inline {
-      }
-
-      .tick-group {
-      }
-
       body {
         background-color: rgb(255, 255, 255) !important;
         min-width: 1000px;
         overflow: hidden;
-      }
-
-      .tick-text-inline {
-        color: rgb(90, 93, 99) !important;
-      }
-
-      .tick-label {
-        color: rgb(90, 93, 99) !important;
-      }
-
-      .tick-flip-panel {
-        color: rgb(255, 255, 255) !important;
-      }
-
-      .tick-flip {
-        text-align: left !important;
-      }
-
-      .tick-flip-panel-text-wrapper {
-        display:inline-block;
-        position:relative;
-        left:-28%;
-        top:-1.5em;
-        font-size: 0.5em;
-        letter-spacing: 0em;
-        margin:0px !important;
-        bottom:0px;
-      }
-
-      .tick-flip-panel {
-        background-color: rgb(90, 120, 99) !important;
-        
-      }
-
-      .tick-flip-panel-front {
-        border-width: 0.07em 0.07em 0.1em 0.07em;
-        border-color: white;
-        border-style: solid;
-        /* Transparent so the bird-photo img underneath shows through,
-           while the border and digit number still render on top */
-        background-color: transparent !important;
-      }
-
-      /* Fill the card background with bird color so page green never shows
-         through the backface-visibility:hidden gap during the flip animation */
-      #hours .tick-flip-card,
-      #mins  .tick-flip-card,
-      #secs  .tick-flip-card {
-        background-color: var(--bird-color, #333232);
-      }
-
-      /* Bird photos are applied via .bird-photo img on .tick-flip-card (z-index:2,
-         inserted before front panel so front panel at same z-index renders on top) */
-
-      .tick-flip {
-        border-radius: 0em !important;
-        height: 3em;
-      }
-
-      .infoBox {
-        position: absolute;
-        display: block;
-        left: 0px;
-        width: 85%;
-        height: 100%;
-        margin-top: 0.1em;
-        margin-left: 0.1em;
-        margin-right: 0.2em;
-      }
-
-      .species {
-        position: relative;
-        display: block;
-        height: auto;
-        left: 0px;
-        width: 100%;
-
-        white-space: normal;
-        overflow-wrap: break-word;
-        text-indent: 0px;
-
-        font-size: 0.2em !important;
-        letter-spacing: 0em !important;
-        color: white;
-
-        z-index: 2;
-
-        pointer-events: auto;
-        cursor: pointer;
-      }
-
-      .species:hover {
-        color: #ffffff99;
-      }
-
-      .latin {
-        position: relative;
-        display: block;
-        height: 100%;
-        top: 0em;
-        left: 0px;
-        width: 100%;
-
-        white-space: normal;
-        text-indent: 0px;
-
-        font-size: 0.15em !important;
-        letter-spacing: 0em !important;
-        color: #ffffff88;
-
-        z-index: 2;
-      }
-
-      .since {
-        position: absolute;
-        display: block;
-        height: 0.25em;
-        width: auto;
-        bottom: 3em;
-        font-size: 0.1em !important;
-        letter-spacing: 0em !important;
-        color: white;
-        z-index: 2;
-
-        font-weight: 300;
-
-        text-indent: 0px;
-
-        pointer-events: auto;
-        cursor: pointer;
-      }
-
-      .since:hover {
-        color: #ffffff99;
-      }
-
-      .tickBox {
-        width: 80vw;
-        min-width: 1000px;
-      }
-
-      .mapBox {
-        position: absolute;
-        display: block;
-        left: 0px;
-        top: 100%;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-      }
-
-      .mapSvg {
-        position: relative;
-        display: block;
-        left: 0px;
-        top: -105%;
-        display: block;
-        width: 100%;
-        height: 100%;
       }
 
       .switchButton {
@@ -244,17 +51,14 @@
 
       .switchButton:hover {
         opacity: 1;
-        pointer-events: auto;
       }
 
       #wrapper {
         position: absolute;
-        padding: 10px;
         left: 0px;
         top: 0px;
         width: 100%;
         height: 100%;
-        display: block;
         pointer-events: none;
       }
 
@@ -270,8 +74,8 @@
         color: #665566;
         opacity: 0;
       }
+
       .clockBlock {
-        display: block;
         opacity: 0;
       }
 
@@ -291,9 +95,144 @@
         text-decoration: none;
       }
 
-      .tick-credits {
-        display: none !important;
+      /* ---- Bird flip cards ---- */
+      #birdcards {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2vw;
+        padding: 4vw 9vw;
+        box-sizing: border-box;
       }
+
+      .bird-scene {
+        flex: 1;
+        height: 80%;
+        perspective: 1200px;
+      }
+
+      .bird-card {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.4s ease-in-out;
+      }
+
+      .bird-scene.is-flipped .bird-card {
+        transform: rotateY(180deg);
+      }
+
+      .bird-card-face {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+
+      .bird-front {
+        border: 4px solid white;
+        box-sizing: border-box;
+        overflow: hidden;
+        background: rgb(90, 120, 99);
+      }
+
+      .bird-front .bird-photo {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .bird-front .bird-number {
+        position: absolute;
+        bottom: 0.4em;
+        right: 0.5em;
+        font-family: Outfit, arial, sans-serif;
+        font-size: 5vw;
+        font-weight: 500;
+        color: white;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        line-height: 1;
+      }
+
+      .bird-back {
+        transform: rotateY(180deg);
+        background: #2F4858;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 6%;
+        pointer-events: auto;
+      }
+
+      .bird-sep {
+        font-family: Outfit, arial, sans-serif;
+        font-size: 4vw;
+        color: rgba(255,255,255,0.5);
+        flex: 0 0 auto;
+        align-self: center;
+      }
+
+      /* Info box content (shown in back face) */
+      .infoBox {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .species {
+        font-family: Outfit, arial, sans-serif;
+        font-size: 2.5vw;
+        font-weight: 500;
+        color: white;
+        cursor: pointer;
+        pointer-events: auto;
+        flex: 0 0 auto;
+      }
+
+      .species:hover { color: rgba(255,255,255,0.7); }
+
+      .latin {
+        font-family: Outfit, arial, sans-serif;
+        font-size: 1.4vw;
+        color: rgba(255,255,255,0.6);
+        flex: 0 0 auto;
+        margin-top: 0.3em;
+      }
+
+      .since {
+        font-family: Outfit, arial, sans-serif;
+        font-size: 1.4vw;
+        color: white;
+        flex: 0 0 auto;
+        margin-top: 0.5em;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .since:hover { color: rgba(255,255,255,0.7); }
+
+      .mapBox {
+        flex: 1;
+        position: relative;
+        margin-top: 1em;
+        min-height: 0;
+      }
+
+      .mapSvg {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .tick-credits { display: none !important; }
     </style>
 
     <div id="controls">
@@ -308,28 +247,49 @@
     <div id="intro"></div>
 
     <div id="wrapper">
-      <div class="tick" data-did-init="handleTickInit" id="clock">
+      <!-- Tick.js hidden — used only for Tick.helper.interval timing -->
+      <div class="tick" data-did-init="handleTickInit" id="clock" style="display:none">
         <div data-layout="horizontal fit" id="tickBox">
-          <span
-            id="hours"
-            data-key="hours"
-            data-view="flip"
-            class="clockBlock"
-          ></span>
+          <span data-key="hours" data-view="flip"></span>
+          <span data-key="minutes" data-view="flip"></span>
+          <span data-key="seconds" data-view="flip"></span>
+        </div>
+      </div>
 
-          <span
-            id="mins"
-            data-key="minutes"
-            data-view="flip"
-            class="clockBlock"
-          ></span>
+      <!-- Bird flip card display -->
+      <div id="birdcards">
+        <div class="bird-scene clockBlock" id="hours">
+          <div class="bird-card">
+            <div class="bird-card-face bird-front">
+              <img class="bird-photo" alt="" />
+              <div class="bird-number">00</div>
+            </div>
+            <div class="bird-card-face bird-back"></div>
+          </div>
+        </div>
 
-          <span
-            id="secs"
-            data-key="seconds"
-            data-view="flip"
-            class="clockBlock"
-          ></span>
+        <div class="bird-sep">·</div>
+
+        <div class="bird-scene clockBlock" id="mins">
+          <div class="bird-card">
+            <div class="bird-card-face bird-front">
+              <img class="bird-photo" alt="" />
+              <div class="bird-number">00</div>
+            </div>
+            <div class="bird-card-face bird-back"></div>
+          </div>
+        </div>
+
+        <div class="bird-sep">·</div>
+
+        <div class="bird-scene clockBlock" id="secs">
+          <div class="bird-card">
+            <div class="bird-card-face bird-front">
+              <img class="bird-photo" alt="" />
+              <div class="bird-number">00</div>
+            </div>
+            <div class="bird-card-face bird-back"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -530,136 +490,33 @@
         elem.requestFullscreen();
         document.getElementById("controls").style.visibility = "hidden";
         document.getElementById("footy").style.visibility = "hidden";
-        document.querySelector(".tick").style.margin = "0px";
-        document.querySelectorAll(".tick-flip").forEach(function(el) {
+        document.querySelectorAll('.bird-scene').forEach(function(el) {
           el.style.height = "95vh";
-          el.style.marginLeft = "0px";
         });
-        
       };
       
       
       function handleTickInit(tick) {
-        // start interval (default is 1 second) and update clock with current time
         Tick.helper.interval(function () {
           changeTime();
           var d = Tick.helper.date();
           var h = d.getHours();
           var m = d.getMinutes();
           var s = d.getSeconds();
-          tick.value = {
-            sep: ".",
-            hours: h < 10 ? "0" + h : h,
-            minutes: m < 10 ? "0" + m : m,
-            seconds: s < 10 ? "0" + s : s,
-          };
+          tick.value = { sep: ".", hours: h < 10 ? "0" + h : h, minutes: m < 10 ? "0" + m : m, seconds: s < 10 ? "0" + s : s };
           timeMap.hours.time = h;
           timeMap.secs.time = s;
           timeMap.mins.time = m;
-          // Apply images to the new panels the library just created
-          requestAnimationFrame(applyAllImages);
         });
       }
 
       var lastTime = new Date(0);
       var birdCache = {};
-      var sectionImages = { hours: null, mins: null, secs: null };
-      var imageCache = []; // keep Image objects referenced so they aren't GC'd
-      var worldGeojson = null; // cached world map data
+      var imageCache = [];
+      var worldGeojson = null;
 
-      // One-time DOM inspector — fires 5s after load
-      setTimeout(function() {
-        var se = document.querySelector('#hours');
-        if (se) {
-          // Check front panels specifically
-          var fronts = se.querySelectorAll('.tick-flip-panel-front');
-          fronts.forEach(function(p, i) {
-            var cs = window.getComputedStyle(p);
-            console.log('[DOM] front[' + i + '] w=' + p.offsetWidth + ' h=' + p.offsetHeight +
-              ' bgimg=' + (cs.backgroundImage !== 'none' ? 'SET' : 'none') +
-              ' clip=' + cs.clipPath + ' overflow=' + cs.overflow +
-              ' vis=' + cs.visibility + ' opacity=' + cs.opacity);
-            // Check for our bird-photo img
-            var ph = p.querySelector('.bird-photo');
-            if (ph) {
-              var pcs = window.getComputedStyle(ph);
-              var rect = ph.getBoundingClientRect();
-              console.log('[DOM]   bird-photo w=' + ph.offsetWidth + ' h=' + ph.offsetHeight +
-                ' display=' + pcs.display + ' vis=' + pcs.visibility +
-                ' naturalW=' + ph.naturalWidth + ' complete=' + ph.complete);
-              console.log('[DOM]   bird-photo rect: top=' + Math.round(rect.top) + ' left=' + Math.round(rect.left) + ' w=' + Math.round(rect.width) + ' h=' + Math.round(rect.height));
-              // What element is the browser actually rendering at the center of this img?
-              var cx = rect.left + rect.width / 2;
-              var cy = rect.top + rect.height / 2;
-              var topEl = document.elementFromPoint(cx, cy);
-              console.log('[DOM]   top element at img center: ' + (topEl ? topEl.tagName + ' class=' + topEl.className : 'null'));
-              if (topEl && topEl !== ph) {
-                var tcs = window.getComputedStyle(topEl);
-                console.log('[DOM]   top element zIndex=' + tcs.zIndex + ' opacity=' + tcs.opacity + ' bgimg=' + (tcs.backgroundImage !== 'none' ? 'SET' : 'none') + ' bgcolor=' + tcs.backgroundColor);
-              }
-            } else {
-              console.log('[DOM]   NO bird-photo found in front[' + i + ']');
-            }
-            // Check shadow child
-            var shadow = p.querySelector('[class*="shadow"]');
-            if (shadow) {
-              var scs = window.getComputedStyle(shadow);
-              console.log('[DOM]   shadow w=' + shadow.offsetWidth + ' h=' + shadow.offsetHeight +
-                ' zIndex=' + scs.zIndex + ' opacity=' + scs.opacity +
-                ' bgimg=' + (scs.backgroundImage !== 'none' ? 'SET' : 'none') +
-                ' pos=' + scs.position);
-            }
-          });
-        }
-      }, 5000);
 
-      // Apply bird photo to .tick-flip-card (not the preserve-3d front panel).
-      // The card has only perspective:4em, no transform-style:preserve-3d, so
-      // z-index works normally and we can sit at z-index:3 above the panels.
-      var _observing = false;
-      function applyAllImages() {
-        if (_observing) _imgObserver.disconnect();
-        ['hours', 'mins', 'secs'].forEach(function(sec) {
-          var imgUrl = sectionImages[sec];
-          var cards = document.querySelectorAll('#' + sec + ' .tick-flip-card');
-          cards.forEach(function(card) {
-            var existing = card.querySelector('.bird-photo');
-            if (imgUrl) {
-              if (!existing) {
-                existing = document.createElement('img');
-                existing.className = 'bird-photo';
-                // z-index:2 matches the front panel. Inserted BEFORE the front panel
-                // so the front panel (same z-index, later in DOM) renders on top —
-                // its border and digit number stay visible over the bird photo.
-                // Front panel CSS is now transparent so the photo shows through.
-                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:51%;object-fit:cover;object-position:top;z-index:2;pointer-events:none;display:block;';
-                existing.onload = function() { console.log('[img] loaded ' + sec); };
-                existing.onerror = function() { console.log('[img] ERROR ' + this.src.substring(0, 80)); };
-                card.insertBefore(existing, card.firstChild);
-              }
-              if (existing.src !== imgUrl) existing.src = imgUrl;
-            } else {
-              if (existing) existing.remove();
-            }
-          });
-        });
-        if (_observing) _reObserve();
-      }
 
-      function _reObserve() {
-        ['hours', 'mins', 'secs'].forEach(function(sec) {
-          var se = document.querySelector('#' + sec);
-          if (se) _imgObserver.observe(se, { childList: true, subtree: true });
-        });
-      }
-
-      // MutationObserver: re-apply images whenever the flip library modifies the DOM
-      var _imgObserver = new MutationObserver(function() { applyAllImages(); });
-      setTimeout(function() {
-        _reObserve();
-        _observing = true;
-        console.log('[observer] watching hours/mins/secs');
-      }, 1000);
 
       function fetchAllBirds() {
         fetch("/allBirds")
@@ -761,10 +618,6 @@
           sectionEl.style.setProperty("--bird-color", colors[ci]);
         }
 
-        // Store image URL and apply to all current panels immediately.
-        sectionImages[section] = bird.image || null;
-        console.log('[placeBird] ' + section + ' image=' + (bird.image ? bird.image.substring(0, 70) : 'NONE'));
-        applyAllImages();
 
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
@@ -847,16 +700,42 @@
             .catch(function() {});
         }
 
-        (function waitForBack() {
-          var se = document.querySelector("#" + section);
-          var backs = se ? se.querySelectorAll(".tick-flip-back") : [];
-          var b = backs[1] || backs[0] || null;
-          if (!b) { requestAnimationFrame(waitForBack); return; }
-          b.innerHTML = "";
-          b.setAttribute("style", "background-color:" + colors[ci] + " !important;");
-          b.appendChild(infoBox);
-          if (!introed) startIntro();
-        })();
+        // Update the bird card for this section
+        var scene = document.querySelector('#' + section);
+        if (scene) {
+          // Front face: bird photo + time number
+          var photo = scene.querySelector('.bird-photo');
+          var numEl = scene.querySelector('.bird-number');
+          if (photo) {
+            if (bird.image) { photo.src = bird.image; photo.style.display = 'block'; }
+            else { photo.style.display = 'none'; }
+          }
+          if (numEl) {
+            var tv = section === 'hours' ? (new Date()).getHours() : section === 'mins' ? (new Date()).getMinutes() : (new Date()).getSeconds();
+            numEl.textContent = tv < 10 ? '0' + tv : '' + tv;
+          }
+          // Back face: bird info
+          var backFace = scene.querySelector('.bird-back');
+          if (backFace) {
+            backFace.innerHTML = '';
+            backFace.style.backgroundColor = colors[ci];
+            backFace.appendChild(infoBox);
+          }
+          // Flip the whole card to show the back, then flip back to front
+          var card = scene.querySelector('.bird-card');
+          if (card) {
+            var flipMs = section === 'secs' ? 250 : 450;
+            var holdMs = section === 'secs' ? 500 : section === 'mins' ? 8000 : 30000;
+            clearTimeout(card._timer);
+            card.style.transitionDuration = flipMs + 'ms';
+            scene.classList.add('is-flipped');
+            card._timer = setTimeout(function() {
+              card.style.transitionDuration = flipMs + 'ms';
+              scene.classList.remove('is-flipped');
+            }, flipMs + holdMs);
+          }
+        }
+        if (!introed) startIntro();
       }
 
       // Load all birds at startup, then refresh every 60 seconds
