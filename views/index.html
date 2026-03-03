@@ -113,9 +113,9 @@
         border-style: solid;
       }
 
-      .tick-flip-front .tick-flip-panel-front {
-        background-size: cover;
-        background-position: center;
+      /* Hide the digit text on front panels when a bird image is set */
+      .tick-flip-panel-front .tick-flip-panel-front-text {
+        visibility: hidden;
       }
 
       .tick-flip {
@@ -594,7 +594,7 @@
 
         // Set image directly on all front panels
         (function waitForPanels() {
-          var panels = document.querySelectorAll("#" + section + " .tick-flip-front .tick-flip-panel-front");
+          var panels = document.querySelectorAll("#" + section + " .tick-flip-panel-front");
           if (!panels.length) { requestAnimationFrame(waitForPanels); return; }
           panels.forEach(function(p) {
             if (bird.image) {
