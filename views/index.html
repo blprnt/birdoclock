@@ -633,18 +633,16 @@
               if (!existing) {
                 existing = document.createElement('img');
                 existing.className = 'bird-photo';
-                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:10;pointer-events:none;display:block;';
+                // translateZ(0.01px) pushes the img forward in the panel's preserve-3d
+                // context so it renders above all other panel children
+                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;pointer-events:none;display:block;transform:translateZ(0.01px);backface-visibility:visible;';
                 existing.onload = function() { console.log('[img] loaded ' + sec + ' ' + this.naturalWidth + 'x' + this.naturalHeight); };
                 existing.onerror = function() { console.log('[img] ERROR loading ' + this.src.substring(0, 80)); };
                 p.appendChild(existing);
               }
               if (existing.src !== imgUrl) existing.src = imgUrl;
-              p.style.backgroundImage = 'url("' + imgUrl + '")';
-              p.style.backgroundSize = 'cover';
-              p.style.backgroundPosition = 'center';
             } else {
               if (existing) existing.remove();
-              p.style.backgroundImage = '';
             }
           });
         });
