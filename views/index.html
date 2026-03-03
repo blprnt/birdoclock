@@ -574,42 +574,60 @@
       var imageCache = []; // keep Image objects referenced so they aren't GC'd
       var worldGeojson = null; // cached world map data
 
-      // One-time DOM inspector — fires 3s after load
+      // One-time DOM inspector — fires 5s after load
       setTimeout(function() {
         var se = document.querySelector('#hours');
         if (se) {
-          var allEls = se.querySelectorAll('[class*="tick-flip"]');
-          console.log('[DOM] #hours elements=' + allEls.length);
-          allEls.forEach(function(el, i) {
-            if (i < 20) {
-              var cs = window.getComputedStyle(el);
-              var classes = el.className.split(' ').filter(function(c){ return c.indexOf('tick-flip-panel') === 0; }).join(' ') || el.className.split(' ')[0];
-              console.log('[DOM] ' + classes + ' top=' + cs.top + ' zIndex=' + cs.zIndex + ' bgimg=' + (cs.backgroundImage !== 'none' ? 'SET' : 'none') + ' bgcolor=' + cs.backgroundColor);
+          // Check front panels specifically
+          var fronts = se.querySelectorAll('.tick-flip-panel-front');
+          fronts.forEach(function(p, i) {
+            var cs = window.getComputedStyle(p);
+            console.log('[DOM] front[' + i + '] w=' + p.offsetWidth + ' h=' + p.offsetHeight +
+              ' bgimg=' + (cs.backgroundImage !== 'none' ? 'SET' : 'none') +
+              ' clip=' + cs.clipPath + ' overflow=' + cs.overflow +
+              ' vis=' + cs.visibility + ' opacity=' + cs.opacity);
+            // Check for our bird-photo img
+            var ph = p.querySelector('.bird-photo');
+            if (ph) {
+              var pcs = window.getComputedStyle(ph);
+              console.log('[DOM]   bird-photo w=' + ph.offsetWidth + ' h=' + ph.offsetHeight +
+                ' display=' + pcs.display + ' vis=' + pcs.visibility +
+                ' naturalW=' + ph.naturalWidth + ' complete=' + ph.complete +
+                ' src=' + ph.src.substring(0, 70));
+            } else {
+              console.log('[DOM]   NO bird-photo found in front[' + i + ']');
+            }
+            // Check shadow child
+            var shadow = p.querySelector('[class*="shadow"]');
+            if (shadow) {
+              var scs = window.getComputedStyle(shadow);
+              console.log('[DOM]   shadow w=' + shadow.offsetWidth + ' h=' + shadow.offsetHeight +
+                ' zIndex=' + scs.zIndex + ' opacity=' + scs.opacity +
+                ' bgimg=' + (scs.backgroundImage !== 'none' ? 'SET' : 'none'));
             }
           });
         }
-      }, 3000);
+      }, 5000);
 
       // Apply inline background-image to all front panels in all sections.
+      var _observing = false;
       function applyAllImages() {
+        if (_observing) _imgObserver.disconnect();
         ['hours', 'mins', 'secs'].forEach(function(sec) {
           var imgUrl = sectionImages[sec];
           var panels = document.querySelectorAll('#' + sec + ' .tick-flip-panel-front');
-          if (imgUrl) {
-            console.log('[apply] ' + sec + ': ' + panels.length + ' panels, img=' + imgUrl.substring(0, 60));
-          }
           panels.forEach(function(p) {
-            // Try both img child and inline style — belt and suspenders
             var existing = p.querySelector('.bird-photo');
             if (imgUrl) {
               if (!existing) {
                 existing = document.createElement('img');
                 existing.className = 'bird-photo';
                 existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:10;pointer-events:none;display:block;';
+                existing.onload = function() { console.log('[img] loaded ' + sec + ' ' + this.naturalWidth + 'x' + this.naturalHeight); };
+                existing.onerror = function() { console.log('[img] ERROR loading ' + this.src.substring(0, 80)); };
                 p.appendChild(existing);
               }
-              existing.src = imgUrl;
-              // Also set inline background as fallback
+              if (existing.src !== imgUrl) existing.src = imgUrl;
               p.style.backgroundImage = 'url("' + imgUrl + '")';
               p.style.backgroundSize = 'cover';
               p.style.backgroundPosition = 'center';
@@ -619,18 +637,22 @@
             }
           });
         });
+        if (_observing) _reObserve();
+      }
+
+      function _reObserve() {
+        ['hours', 'mins', 'secs'].forEach(function(sec) {
+          var se = document.querySelector('#' + sec);
+          if (se) _imgObserver.observe(se, { childList: true, subtree: true });
+        });
       }
 
       // MutationObserver: re-apply images whenever the flip library modifies the DOM
       var _imgObserver = new MutationObserver(function() { applyAllImages(); });
       setTimeout(function() {
-        ['hours', 'mins', 'secs'].forEach(function(sec) {
-          var se = document.querySelector('#' + sec);
-          if (se) {
-            _imgObserver.observe(se, { childList: true, subtree: true });
-            console.log('[observer] watching #' + sec);
-          }
-        });
+        _reObserve();
+        _observing = true;
+        console.log('[observer] watching hours/mins/secs');
       }, 1000);
 
       function fetchAllBirds() {
