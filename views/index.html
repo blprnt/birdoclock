@@ -591,27 +591,49 @@
       }, 3000);
 
       // Apply inline background-image to all front panels in all sections.
-      // Called after placeBird (for existing panels) and after tick.value via rAF
-      // (for new panels the library creates during the flip animation).
+      var _applyLog = true;
       function applyAllImages() {
         ['hours', 'mins', 'secs'].forEach(function(sec) {
           var imgUrl = sectionImages[sec];
-          document.querySelectorAll('#' + sec + ' .tick-flip-panel-front').forEach(function(p) {
+          var panels = document.querySelectorAll('#' + sec + ' .tick-flip-panel-front');
+          if (_applyLog) {
+            console.log('[apply] ' + sec + ': ' + panels.length + ' panels, img=' + (imgUrl ? imgUrl.substring(0, 60) : 'null'));
+          }
+          panels.forEach(function(p) {
+            // Try both img child and inline style — belt and suspenders
             var existing = p.querySelector('.bird-photo');
             if (imgUrl) {
               if (!existing) {
                 existing = document.createElement('img');
                 existing.className = 'bird-photo';
-                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;display:block;';
+                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:10;pointer-events:none;display:block;';
                 p.appendChild(existing);
               }
               existing.src = imgUrl;
-            } else if (existing) {
-              existing.remove();
+              // Also set inline background as fallback
+              p.style.backgroundImage = 'url("' + imgUrl + '")';
+              p.style.backgroundSize = 'cover';
+              p.style.backgroundPosition = 'center';
+            } else {
+              if (existing) existing.remove();
+              p.style.backgroundImage = '';
             }
           });
         });
+        _applyLog = false;
       }
+
+      // MutationObserver: re-apply images whenever the flip library modifies the DOM
+      var _imgObserver = new MutationObserver(function() { applyAllImages(); });
+      setTimeout(function() {
+        ['hours', 'mins', 'secs'].forEach(function(sec) {
+          var se = document.querySelector('#' + sec);
+          if (se) {
+            _imgObserver.observe(se, { childList: true, subtree: true });
+            console.log('[observer] watching #' + sec);
+          }
+        });
+      }, 1000);
 
       function fetchAllBirds() {
         fetch("/allBirds")
