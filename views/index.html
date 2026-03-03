@@ -126,17 +126,13 @@
         visibility: hidden;
       }
 
-      /* Bird images via CSS variables — applies to all panels including ones
-         created by the library after tick.value changes, solving timing issues */
+      /* Bird images applied via inline styles by applyAllImages() in JS */
       #hours .tick-flip-panel-front,
       #mins  .tick-flip-panel-front,
       #secs  .tick-flip-panel-front {
         background-size: cover;
         background-position: center;
       }
-      #hours .tick-flip-panel-front { background-image: var(--hours-img) !important; }
-      #mins  .tick-flip-panel-front { background-image: var(--mins-img)  !important; }
-      #secs  .tick-flip-panel-front { background-image: var(--secs-img)  !important; }
 
       .tick-flip {
         border-radius: 0em !important;
@@ -351,7 +347,6 @@
     </div>
 
     <script>
-      console.log("[birdoclock] v3 loaded");
       //intro
       var introed = false;
       function startIntro() {
@@ -568,13 +563,32 @@
           timeMap.hours.time = h;
           timeMap.secs.time = s;
           timeMap.mins.time = m;
+          // Apply images to the new panels the library just created
+          requestAnimationFrame(applyAllImages);
         });
       }
 
       var lastTime = new Date(0);
       var birdCache = {};
+      var sectionImages = { hours: null, mins: null, secs: null };
       var imageCache = []; // keep Image objects referenced so they aren't GC'd
       var worldGeojson = null; // cached world map data
+
+      // Apply inline background-image to all front panels in all sections.
+      // Called after placeBird (for existing panels) and after tick.value via rAF
+      // (for new panels the library creates during the flip animation).
+      function applyAllImages() {
+        ['hours', 'mins', 'secs'].forEach(function(sec) {
+          var imgUrl = sectionImages[sec];
+          document.querySelectorAll('#' + sec + ' .tick-flip-panel-front').forEach(function(p) {
+            if (imgUrl) {
+              p.style.backgroundImage = "url('" + imgUrl + "')";
+            } else {
+              p.style.backgroundImage = '';
+            }
+          });
+        });
+      }
 
       function fetchAllBirds() {
         fetch("/allBirds")
@@ -676,22 +690,10 @@
           sectionEl.style.setProperty("--bird-color", colors[ci]);
         }
 
-        // CSS variable approach: applies to all panels including ones the library
-        // creates after tick.value changes — no timing/polling needed
-        if (bird.image) {
-          console.log("[img] " + section + " " + bird.comName + " -> " + bird.image.substring(0, 80));
-          document.documentElement.style.setProperty('--' + section + '-img', 'url("' + bird.image + '")');
-          // Test: render image in a fixed overlay box to verify it loads in browser
-          if (section === "hours") {
-            var td = document.getElementById("imgtest") || document.createElement("div");
-            td.id = "imgtest";
-            td.style.cssText = "position:fixed;bottom:10px;right:10px;z-index:9999;width:120px;height:120px;border:3px solid red;background-image:url('" + bird.image + "');background-size:cover;background-color:#333;";
-            document.body.appendChild(td);
-          }
-        } else {
-          console.log("[img] " + section + " " + bird.comName + " -> NO IMAGE");
-          document.documentElement.style.removeProperty('--' + section + '-img');
-        }
+        // Store image URL and apply to all current panels immediately.
+        // New panels created by tick.value get images via requestAnimationFrame in handleTickInit.
+        sectionImages[section] = bird.image || null;
+        applyAllImages();
 
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
@@ -774,19 +776,11 @@
             .catch(function() {});
         }
 
-        var wfbStart = Date.now();
         (function waitForBack() {
           var se = document.querySelector("#" + section);
           var backs = se ? se.querySelectorAll(".tick-flip-back") : [];
-          // backs[1] = units-digit back panel (preferred); backs[0] as fallback
           var b = backs[1] || backs[0] || null;
-          if (!b) {
-            if (Date.now() - wfbStart > 2000) {
-              console.log("[waitForBack] " + section + " TIMEOUT — backs.length=" + backs.length + ", innerHTML: " + (se ? se.innerHTML.substring(0, 200) : "NO SE"));
-            }
-            requestAnimationFrame(waitForBack); return;
-          }
-          console.log("[waitForBack] " + section + " using backs[" + (backs[1] ? 1 : 0) + "] of " + backs.length);
+          if (!b) { requestAnimationFrame(waitForBack); return; }
           b.innerHTML = "";
           b.setAttribute("style", "background-color:" + colors[ci] + " !important;");
           b.appendChild(infoBox);
