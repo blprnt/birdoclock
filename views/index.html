@@ -574,17 +574,17 @@
       var imageCache = []; // keep Image objects referenced so they aren't GC'd
       var worldGeojson = null; // cached world map data
 
-      // One-time DOM inspector — fires 3s after load to show actual library structure
+      // One-time DOM inspector — fires 3s after load
       setTimeout(function() {
         var se = document.querySelector('#hours');
         if (se) {
-          var fronts = se.querySelectorAll('.tick-flip-panel-front');
           var allEls = se.querySelectorAll('[class*="tick-flip"]');
-          console.log('[DOM] #hours fronts=' + fronts.length);
+          console.log('[DOM] #hours elements=' + allEls.length);
           allEls.forEach(function(el, i) {
             if (i < 20) {
               var cs = window.getComputedStyle(el);
-              console.log('[DOM] ' + el.className + ' bgimg=' + cs.backgroundImage.substring(0,60) + ' vis=' + cs.visibility + ' opacity=' + cs.opacity + ' bgcolor=' + cs.backgroundColor);
+              var classes = el.className.split(' ').filter(function(c){ return c.indexOf('tick-flip-panel') === 0; }).join(' ') || el.className.split(' ')[0];
+              console.log('[DOM] ' + classes + ' top=' + cs.top + ' zIndex=' + cs.zIndex + ' bgimg=' + (cs.backgroundImage !== 'none' ? 'SET' : 'none') + ' bgcolor=' + cs.backgroundColor);
             }
           });
         }
@@ -597,12 +597,17 @@
         ['hours', 'mins', 'secs'].forEach(function(sec) {
           var imgUrl = sectionImages[sec];
           document.querySelectorAll('#' + sec + ' .tick-flip-panel-front').forEach(function(p) {
+            var existing = p.querySelector('.bird-photo');
             if (imgUrl) {
-              p.style.backgroundImage = "url('" + imgUrl + "')";
-              p.style.backgroundSize = 'cover';
-              p.style.backgroundPosition = 'center';
-            } else {
-              p.style.backgroundImage = '';
+              if (!existing) {
+                existing = document.createElement('img');
+                existing.className = 'bird-photo';
+                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;display:block;';
+                p.appendChild(existing);
+              }
+              existing.src = imgUrl;
+            } else if (existing) {
+              existing.remove();
             }
           });
         });
