@@ -113,15 +113,6 @@
         border-style: solid;
       }
 
-      /* Bird image auto-cascades to any panels the library creates dynamically */
-      #hours .tick-flip-panel-front,
-      #mins  .tick-flip-panel-front,
-      #secs  .tick-flip-panel-front {
-        background-image: var(--bird-image, none);
-        background-size: cover;
-        background-position: center;
-      }
-
       /* Fill the card background with bird color so page green never shows
          through the backface-visibility:hidden gap during the flip animation */
       #hours .tick-flip-card,
@@ -670,18 +661,19 @@
           sectionEl.style.setProperty("--bird-color", colors[ci]);
         }
 
-        // The Tick library creates a new .tick-flip-card AFTER changeTime() returns
-        // (because tick.value is set after changeTime in handleTickInit). We must
-        // defer with rAF so we run after that new card exists and catch its panels.
-        requestAnimationFrame(function() {
-          var se = document.querySelector("#" + section);
-          if (!se) return;
-          se.querySelectorAll(".tick-flip-panel-front").forEach(function(p) {
-            p.style.backgroundImage = bird.image ? "url(\"" + bird.image + "\")" : "";
-            p.style.backgroundSize = "cover";
-            p.style.backgroundPosition = "center";
+        (function waitForPanels() {
+          var panels = document.querySelectorAll("#" + section + " .tick-flip-panel-front");
+          if (!panels.length) { requestAnimationFrame(waitForPanels); return; }
+          panels.forEach(function(p) {
+            if (bird.image) {
+              p.style.backgroundImage = "url(\"" + bird.image + "\")";
+              p.style.backgroundSize = "cover";
+              p.style.backgroundPosition = "center";
+            } else {
+              p.style.backgroundImage = "";
+            }
           });
-        });
+        })();
 
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
