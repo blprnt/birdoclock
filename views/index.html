@@ -113,9 +113,7 @@
         border-style: solid;
       }
 
-      /* Bird image only on the top-half panels — bottom half shows bird info */
       .tick-flip-front .tick-flip-panel-front {
-        background-image: var(--bird-image, none);
         background-size: cover;
         background-position: center;
       }
@@ -127,14 +125,13 @@
 
       .infoBox {
         position: absolute;
+        display: block;
         left: 0px;
-        top: 50%;     /* bottom half of .tick-flip */
         width: 85%;
-        height: 50%;
+        height: 100%;
         margin-top: 0.1em;
         margin-left: 0.1em;
-        z-index: 100; /* above .tick-flip-card (z-index:1) and all panels */
-        pointer-events: none;
+        margin-right: 0.2em;
       }
 
       .species {
@@ -595,22 +592,21 @@
       function placeBird(section, bird) {
         if (!bird || !bird.comName || !bird.obsDt) return;
 
-        /*
-        document
-          .querySelector("#" + section)
-          .querySelector(".tick-flip-panel-front")
-          .setAttribute("style", "background-image: url('" + bird.image + "')");
-          */
+        // Set image directly on all front panels
+        (function waitForPanels() {
+          var panels = document.querySelectorAll("#" + section + " .tick-flip-front .tick-flip-panel-front");
+          if (!panels.length) { requestAnimationFrame(waitForPanels); return; }
+          panels.forEach(function(p) {
+            if (bird.image) {
+              p.style.backgroundImage = "url(\"" + bird.image + "\")";
+              p.style.backgroundSize = "cover";
+              p.style.backgroundPosition = "center";
+            } else {
+              p.style.backgroundImage = "";
+            }
+          });
+        })();
 
-        // Set --bird-image CSS variable on the section element so it cascades to
-        // all .tick-flip-front .tick-flip-panel-front panels automatically.
-        var sectionEl = document.querySelector("#" + section);
-        if (sectionEl) {
-          sectionEl.style.setProperty("--bird-image",
-            bird.image ? "url(\"" + bird.image + "\")" : "none");
-        }
-
-        // Build the infoBox on a detached element — safe to do before Tick renders
         const infoBox = document.createElement("div");
         infoBox.classList.add("infoBox");
 
@@ -665,7 +661,6 @@
         let ci = Math.ceil(
           Math.min(Math.pow(sinceHours, 0.33), colors.length - 1)
         );
-        infoBox.style.backgroundColor = colors[ci];
         timeMap[section].color = colors[ci];
 
         const sinceDiv = document.createElement("div");
@@ -749,17 +744,14 @@
             .catch(function() {});
         }
 
-        // Append infoBox to .tick-flip (sibling of the flip panels) so the library
-        // can't remove it. Poll until the library has rendered its elements.
-        (function attachInfoBox() {
+        (function waitForBack() {
           var se = document.querySelector("#" + section);
           var backs = se ? se.querySelectorAll(".tick-flip-back") : [];
-          var b = backs[backs.length - 1];
-          if (!b || !b.parentElement) { requestAnimationFrame(attachInfoBox); return; }
-          var flip = b.parentElement; // .tick-flip
-          var old = flip.querySelector(".infoBox");
-          if (old) old.remove();
-          flip.appendChild(infoBox);
+          if (!backs[1]) { requestAnimationFrame(waitForBack); return; }
+          var b = backs[1];
+          b.innerHTML = "";
+          b.setAttribute("style", "background-color:" + colors[ci] + " !important;");
+          b.appendChild(infoBox);
           if (!introed) startIntro();
         })();
       }
