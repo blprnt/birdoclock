@@ -667,18 +667,21 @@
 
         var sectionEl = document.querySelector("#" + section);
         if (sectionEl) {
-          // CSS variable cascades automatically to any new panels the library creates
-          sectionEl.style.setProperty("--bird-image",
-            bird.image ? "url(\"" + bird.image + "\")" : "none");
           sectionEl.style.setProperty("--bird-color", colors[ci]);
+        }
 
-          // Also set directly on existing panels — guaranteed immediate effect
-          sectionEl.querySelectorAll(".tick-flip-panel-front").forEach(function(p) {
+        // The Tick library creates a new .tick-flip-card AFTER changeTime() returns
+        // (because tick.value is set after changeTime in handleTickInit). We must
+        // defer with rAF so we run after that new card exists and catch its panels.
+        requestAnimationFrame(function() {
+          var se = document.querySelector("#" + section);
+          if (!se) return;
+          se.querySelectorAll(".tick-flip-panel-front").forEach(function(p) {
             p.style.backgroundImage = bird.image ? "url(\"" + bird.image + "\")" : "";
             p.style.backgroundSize = "cover";
             p.style.backgroundPosition = "center";
           });
-        }
+        });
 
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
