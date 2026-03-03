@@ -590,10 +590,20 @@
             var ph = p.querySelector('.bird-photo');
             if (ph) {
               var pcs = window.getComputedStyle(ph);
+              var rect = ph.getBoundingClientRect();
               console.log('[DOM]   bird-photo w=' + ph.offsetWidth + ' h=' + ph.offsetHeight +
                 ' display=' + pcs.display + ' vis=' + pcs.visibility +
-                ' naturalW=' + ph.naturalWidth + ' complete=' + ph.complete +
-                ' src=' + ph.src.substring(0, 70));
+                ' naturalW=' + ph.naturalWidth + ' complete=' + ph.complete);
+              console.log('[DOM]   bird-photo rect: top=' + Math.round(rect.top) + ' left=' + Math.round(rect.left) + ' w=' + Math.round(rect.width) + ' h=' + Math.round(rect.height));
+              // What element is the browser actually rendering at the center of this img?
+              var cx = rect.left + rect.width / 2;
+              var cy = rect.top + rect.height / 2;
+              var topEl = document.elementFromPoint(cx, cy);
+              console.log('[DOM]   top element at img center: ' + (topEl ? topEl.tagName + ' class=' + topEl.className : 'null'));
+              if (topEl && topEl !== ph) {
+                var tcs = window.getComputedStyle(topEl);
+                console.log('[DOM]   top element zIndex=' + tcs.zIndex + ' opacity=' + tcs.opacity + ' bgimg=' + (tcs.backgroundImage !== 'none' ? 'SET' : 'none') + ' bgcolor=' + tcs.backgroundColor);
+              }
             } else {
               console.log('[DOM]   NO bird-photo found in front[' + i + ']');
             }
@@ -603,7 +613,8 @@
               var scs = window.getComputedStyle(shadow);
               console.log('[DOM]   shadow w=' + shadow.offsetWidth + ' h=' + shadow.offsetHeight +
                 ' zIndex=' + scs.zIndex + ' opacity=' + scs.opacity +
-                ' bgimg=' + (scs.backgroundImage !== 'none' ? 'SET' : 'none'));
+                ' bgimg=' + (scs.backgroundImage !== 'none' ? 'SET' : 'none') +
+                ' pos=' + scs.position);
             }
           });
         }
