@@ -341,6 +341,25 @@ app.get("/allBirds", (req, res) => {
   res.json(birds);
 });
 
+app.get("/debug", (req, res) => {
+  let rackCounts = rack.map(function(slot) { return slot ? slot.length : 0; });
+  let filledSlots = rackCounts.filter(function(n) { return n > 0; }).length;
+  let imagedSpecies = Object.keys(imageSet).length;
+  let birdsWithImages = 0;
+  for (let i = 0; i <= 60; i++) {
+    let b = getBirdNum(i);
+    if (b && b.image) birdsWithImages++;
+  }
+  res.json({
+    filledRackSlots: filledSlots,
+    totalRackSlots: rackCounts.length,
+    rackCounts: rackCounts,
+    imagedSpecies: imagedSpecies,
+    birdsWithImages: birdsWithImages,
+    imageQLength: imageQ.length
+  });
+});
+
 //buildRack();
 loadBirdImages();
 loadRack();
