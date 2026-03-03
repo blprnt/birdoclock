@@ -665,13 +665,19 @@
         );
         timeMap[section].color = colors[ci];
 
-        // Set CSS variables on the section — cascades to all panels including
-        // ones the library creates dynamically, and fills the backface-hidden gap
         var sectionEl = document.querySelector("#" + section);
         if (sectionEl) {
+          // CSS variable cascades automatically to any new panels the library creates
           sectionEl.style.setProperty("--bird-image",
             bird.image ? "url(\"" + bird.image + "\")" : "none");
           sectionEl.style.setProperty("--bird-color", colors[ci]);
+
+          // Also set directly on existing panels — guaranteed immediate effect
+          sectionEl.querySelectorAll(".tick-flip-panel-front").forEach(function(p) {
+            p.style.backgroundImage = bird.image ? "url(\"" + bird.image + "\")" : "";
+            p.style.backgroundSize = "cover";
+            p.style.backgroundPosition = "center";
+          });
         }
 
         const sinceDiv = document.createElement("div");
