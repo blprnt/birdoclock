@@ -109,55 +109,78 @@
 
       .bird-scene {
         flex: 1;
-        height: 80%;
         display: flex;
         flex-direction: column;
-        gap: 0.6vw;
+        gap: 0.5vw;
       }
 
-      .bird-top-scene {
-        flex: 3;
-        perspective: 1200px;
-        position: relative;
-      }
-
-      .bird-card {
+      /* Both card slots are square and contain a flipping two-face card */
+      .bird-top-scene,
+      .bird-bottom-scene {
         width: 100%;
-        height: 100%;
+        aspect-ratio: 1;
         position: relative;
+        perspective: 1200px;
+      }
+
+      .bird-card,
+      .bird-name-card {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
         transform-style: preserve-3d;
+        transform-origin: center bottom;
         transition: transform 0.4s ease-in-out;
       }
 
-      .bird-top-scene.is-flipped .bird-card {
-        transform: rotateX(180deg);
+      /* Negative rotateX = top comes toward viewer (falls forward from bottom hinge) */
+      .bird-top-scene.is-flipped .bird-card,
+      .bird-bottom-scene.is-flipped .bird-name-card {
+        transform: rotateX(-180deg);
       }
 
+      /* Both faces of each card */
       .bird-card-face {
         position: absolute;
-        top: 0; left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0; width: 100%; height: 100%;
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
+        box-sizing: border-box;
+        border: 4px solid white;
+        overflow: hidden;
       }
 
-      .bird-front {
-        border: 4px solid white;
-        box-sizing: border-box;
-        overflow: hidden;
+      /* Photo card faces */
+      .photo-front,
+      .photo-back {
         background: rgb(90, 120, 99);
       }
 
-      .bird-front .bird-photo {
+      .photo-back {
+        transform: rotateX(180deg);
+      }
+
+      /* Name overlay on the back of the photo card */
+      .bird-next-name {
+        position: absolute;
+        bottom: 0;
+        left: 0; right: 0;
+        padding: 0.6em 0.8em;
+        background: linear-gradient(transparent, rgba(0,0,0,0.7));
+        font-family: Outfit, arial, sans-serif;
+        font-size: 2vw;
+        font-weight: 500;
+        color: white;
+        line-height: 1.2;
+      }
+
+      .bird-photo {
         position: absolute;
         top: 0; left: 0;
         width: 100%; height: 100%;
         object-fit: cover;
-        display: block;
       }
 
-      .bird-front .bird-number {
+      .bird-number {
         position: absolute;
         bottom: 0.4em;
         right: 0.5em;
@@ -169,44 +192,26 @@
         line-height: 1;
       }
 
-      .bird-back {
-        transform: rotateX(180deg);
-        background: #2F4858;
-        overflow: hidden;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 8%;
-      }
-
-      .back-bird-name {
-        font-family: Outfit, arial, sans-serif;
-        font-size: 2.8vw;
-        font-weight: 500;
-        color: white;
-        line-height: 1.3;
-      }
-
-      .bird-bottom-card {
-        flex: 1;
-        border: 4px solid white;
-        box-sizing: border-box;
+      /* Name card faces */
+      .name-front,
+      .name-back {
         background: rgb(70, 95, 75);
         display: flex;
         align-items: center;
-        padding: 0 1em;
-        overflow: hidden;
+        justify-content: center;
+        padding: 1em;
+      }
+
+      .name-back {
+        transform: rotateX(180deg);
       }
 
       .bird-bottom-name {
         font-family: Outfit, arial, sans-serif;
-        font-size: 1.4vw;
+        font-size: 1.8vw;
         color: white;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        text-align: center;
+        line-height: 1.3;
       }
 
       .bird-sep {
@@ -300,15 +305,26 @@
         <div class="bird-scene clockBlock" id="hours">
           <div class="bird-top-scene">
             <div class="bird-card">
-              <div class="bird-card-face bird-front">
+              <div class="bird-card-face photo-front">
                 <img class="bird-photo" alt="" />
-                <div class="bird-number">00</div>
+                <div class="bird-number"></div>
               </div>
-              <div class="bird-card-face bird-back"></div>
+              <div class="bird-card-face photo-back">
+                <img class="bird-photo" alt="" />
+                <div class="bird-number"></div>
+                <div class="bird-next-name"></div>
+              </div>
             </div>
           </div>
-          <div class="bird-bottom-card">
-            <div class="bird-bottom-name"></div>
+          <div class="bird-bottom-scene">
+            <div class="bird-name-card">
+              <div class="bird-card-face name-front">
+                <div class="bird-bottom-name"></div>
+              </div>
+              <div class="bird-card-face name-back">
+                <div class="bird-bottom-name"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -317,15 +333,26 @@
         <div class="bird-scene clockBlock" id="mins">
           <div class="bird-top-scene">
             <div class="bird-card">
-              <div class="bird-card-face bird-front">
+              <div class="bird-card-face photo-front">
                 <img class="bird-photo" alt="" />
-                <div class="bird-number">00</div>
+                <div class="bird-number"></div>
               </div>
-              <div class="bird-card-face bird-back"></div>
+              <div class="bird-card-face photo-back">
+                <img class="bird-photo" alt="" />
+                <div class="bird-number"></div>
+                <div class="bird-next-name"></div>
+              </div>
             </div>
           </div>
-          <div class="bird-bottom-card">
-            <div class="bird-bottom-name"></div>
+          <div class="bird-bottom-scene">
+            <div class="bird-name-card">
+              <div class="bird-card-face name-front">
+                <div class="bird-bottom-name"></div>
+              </div>
+              <div class="bird-card-face name-back">
+                <div class="bird-bottom-name"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -334,15 +361,26 @@
         <div class="bird-scene clockBlock" id="secs">
           <div class="bird-top-scene">
             <div class="bird-card">
-              <div class="bird-card-face bird-front">
+              <div class="bird-card-face photo-front">
                 <img class="bird-photo" alt="" />
-                <div class="bird-number">00</div>
+                <div class="bird-number"></div>
               </div>
-              <div class="bird-card-face bird-back"></div>
+              <div class="bird-card-face photo-back">
+                <img class="bird-photo" alt="" />
+                <div class="bird-number"></div>
+                <div class="bird-next-name"></div>
+              </div>
             </div>
           </div>
-          <div class="bird-bottom-card">
-            <div class="bird-bottom-name"></div>
+          <div class="bird-bottom-scene">
+            <div class="bird-name-card">
+              <div class="bird-card-face name-front">
+                <div class="bird-bottom-name"></div>
+              </div>
+              <div class="bird-card-face name-back">
+                <div class="bird-bottom-name"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -544,9 +582,6 @@
         elem.requestFullscreen();
         document.getElementById("controls").style.visibility = "hidden";
         document.getElementById("footy").style.visibility = "hidden";
-        document.querySelectorAll('.bird-scene').forEach(function(el) {
-          el.style.height = "95vh";
-        });
       };
       
       
@@ -629,47 +664,56 @@
         var scene = document.querySelector('#' + section);
         if (!scene) { if (!introed) startIntro(); return; }
 
-        var topScene = scene.querySelector('.bird-top-scene');
-        var card = topScene && topScene.querySelector('.bird-card');
-        var backFace = topScene && topScene.querySelector('.bird-back');
-        var photo = topScene && topScene.querySelector('.bird-photo');
-        var numEl = topScene && topScene.querySelector('.bird-number');
-        var bottomName = scene.querySelector('.bird-bottom-name');
+        var topScene    = scene.querySelector('.bird-top-scene');
+        var bottomScene = scene.querySelector('.bird-bottom-scene');
+        var photoCard   = topScene    && topScene.querySelector('.bird-card');
+        var nameCard    = bottomScene && bottomScene.querySelector('.bird-name-card');
 
-        // Back face: incoming bird's name (announced during the flip)
-        if (backFace) {
-          backFace.style.backgroundColor = colors[ci];
-          var nameEl = document.createElement('div');
-          nameEl.className = 'back-bird-name';
-          nameEl.textContent = bird.comName;
-          backFace.innerHTML = '';
-          backFace.appendChild(nameEl);
-        }
+        var tv = section === 'hours' ? (new Date()).getHours() :
+                 section === 'mins'  ? (new Date()).getMinutes() : (new Date()).getSeconds();
+        var numStr = tv < 10 ? '0' + tv : '' + tv;
 
-        // Flip the top card on horizontal axis to reveal the new bird's name
-        if (card && topScene) {
-          var flipMs = section === 'secs' ? 250 : 400;
-          var holdMs = section === 'secs' ? 800 : section === 'mins' ? 5000 : 20000;
-          clearTimeout(card._timer);
-          card.style.transitionDuration = flipMs + 'ms';
-          topScene.classList.add('is-flipped');
-          card._timer = setTimeout(function() {
-            // Update front face while card shows its back
-            if (photo) {
-              if (bird.image) { photo.src = bird.image; photo.style.display = 'block'; }
-              else { photo.style.display = 'none'; }
-            }
-            if (numEl) {
-              var tv = section === 'hours' ? (new Date()).getHours() :
-                       section === 'mins'  ? (new Date()).getMinutes() : (new Date()).getSeconds();
-              numEl.textContent = tv < 10 ? '0' + tv : '' + tv;
-            }
-            if (bottomName) bottomName.textContent = bird.comName;
-            // Flip back to reveal the updated front
-            card.style.transitionDuration = flipMs + 'ms';
-            topScene.classList.remove('is-flipped');
-          }, flipMs + holdMs);
-        }
+        // Pre-load the BACK faces with the incoming bird's content
+        var backPhoto  = topScene    && topScene.querySelector('.photo-back .bird-photo');
+        var backNum    = topScene    && topScene.querySelector('.photo-back .bird-number');
+        var backLabel  = topScene    && topScene.querySelector('.photo-back .bird-next-name');
+        var backName   = bottomScene && bottomScene.querySelector('.name-back .bird-bottom-name');
+
+        if (backPhoto) { backPhoto.src = bird.image || ''; backPhoto.style.display = bird.image ? 'block' : 'none'; }
+        if (backNum)   backNum.textContent   = numStr;
+        if (backLabel) backLabel.textContent = bird.comName;
+        if (backName)  backName.textContent  = bird.comName;
+
+        var flipMs = section === 'secs' ? 220 : 380;
+
+        // Flip both cards forward (hinging at the bottom edge)
+        if (photoCard) photoCard.style.transition = 'transform ' + flipMs + 'ms ease-in-out';
+        if (nameCard)  nameCard.style.transition  = 'transform ' + flipMs + 'ms ease-in-out';
+        if (topScene)    topScene.classList.add('is-flipped');
+        if (bottomScene) bottomScene.classList.add('is-flipped');
+
+        // After the flip, update the front faces and snap back silently
+        setTimeout(function() {
+          var frontPhoto = topScene    && topScene.querySelector('.photo-front .bird-photo');
+          var frontNum   = topScene    && topScene.querySelector('.photo-front .bird-number');
+          var frontName  = bottomScene && bottomScene.querySelector('.name-front .bird-bottom-name');
+
+          if (frontPhoto) { frontPhoto.src = bird.image || ''; frontPhoto.style.display = bird.image ? 'block' : 'none'; }
+          if (frontNum)   frontNum.textContent  = numStr;
+          if (frontName)  frontName.textContent = bird.comName;
+
+          // Snap back without animation
+          if (photoCard) photoCard.style.transition = 'none';
+          if (nameCard)  nameCard.style.transition  = 'none';
+          if (topScene)    topScene.classList.remove('is-flipped');
+          if (bottomScene) bottomScene.classList.remove('is-flipped');
+
+          // Re-enable transitions for the next flip
+          requestAnimationFrame(function() {
+            if (photoCard) photoCard.style.transition = '';
+            if (nameCard)  nameCard.style.transition  = '';
+          });
+        }, flipMs + 20);
 
         if (!introed) startIntro();
       }
