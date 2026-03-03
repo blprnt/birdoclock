@@ -126,6 +126,18 @@
         visibility: hidden;
       }
 
+      /* Bird images via CSS variables — applies to all panels including ones
+         created by the library after tick.value changes, solving timing issues */
+      #hours .tick-flip-panel-front,
+      #mins  .tick-flip-panel-front,
+      #secs  .tick-flip-panel-front {
+        background-size: cover;
+        background-position: center;
+      }
+      #hours .tick-flip-panel-front { background-image: var(--hours-img); }
+      #mins  .tick-flip-panel-front { background-image: var(--mins-img); }
+      #secs  .tick-flip-panel-front { background-image: var(--secs-img); }
+
       .tick-flip {
         border-radius: 0em !important;
         height: 3em;
@@ -339,6 +351,7 @@
     </div>
 
     <script>
+      console.log("[birdoclock] v3 loaded");
       //intro
       var introed = false;
       function startIntro() {
@@ -583,6 +596,8 @@
             if (birdCache[now.getHours()])   placeBird("hours", birdCache[now.getHours()]);
             if (birdCache[now.getMinutes()]) placeBird("mins",  birdCache[now.getMinutes()]);
             if (birdCache[now.getSeconds()]) placeBird("secs",  birdCache[now.getSeconds()]);
+            // Fallback: ensure clock becomes visible even if waitForBack never resolves
+            setTimeout(function() { if (!introed) startIntro(); }, 3000);
           })
           .catch(function() {});
       }
@@ -661,19 +676,15 @@
           sectionEl.style.setProperty("--bird-color", colors[ci]);
         }
 
-        (function waitForPanels() {
-          var panels = document.querySelectorAll("#" + section + " .tick-flip-panel-front");
-          if (!panels.length) { requestAnimationFrame(waitForPanels); return; }
-          panels.forEach(function(p) {
-            if (bird.image) {
-              p.style.backgroundImage = "url(\"" + bird.image + "\")";
-              p.style.backgroundSize = "cover";
-              p.style.backgroundPosition = "center";
-            } else {
-              p.style.backgroundImage = "";
-            }
-          });
-        })();
+        // CSS variable approach: applies to all panels including ones the library
+        // creates after tick.value changes — no timing/polling needed
+        if (bird.image) {
+          console.log("[img] " + section + " " + bird.comName + " -> " + bird.image.substring(0, 80));
+          document.documentElement.style.setProperty('--' + section + '-img', 'url("' + bird.image + '")');
+        } else {
+          console.log("[img] " + section + " " + bird.comName + " -> NO IMAGE");
+          document.documentElement.style.removeProperty('--' + section + '-img');
+        }
 
         const sinceDiv = document.createElement("div");
         sinceDiv.classList.add("since");
@@ -756,11 +767,19 @@
             .catch(function() {});
         }
 
+        var wfbStart = Date.now();
         (function waitForBack() {
           var se = document.querySelector("#" + section);
           var backs = se ? se.querySelectorAll(".tick-flip-back") : [];
-          if (!backs[1]) { requestAnimationFrame(waitForBack); return; }
-          var b = backs[1];
+          // backs[1] = units-digit back panel (preferred); backs[0] as fallback
+          var b = backs[1] || backs[0] || null;
+          if (!b) {
+            if (Date.now() - wfbStart > 2000) {
+              console.log("[waitForBack] " + section + " TIMEOUT — backs.length=" + backs.length + ", innerHTML: " + (se ? se.innerHTML.substring(0, 200) : "NO SE"));
+            }
+            requestAnimationFrame(waitForBack); return;
+          }
+          console.log("[waitForBack] " + section + " using backs[" + (backs[1] ? 1 : 0) + "] of " + backs.length);
           b.innerHTML = "";
           b.setAttribute("style", "background-color:" + colors[ci] + " !important;");
           b.appendChild(infoBox);
