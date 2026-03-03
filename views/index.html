@@ -574,6 +574,22 @@
       var imageCache = []; // keep Image objects referenced so they aren't GC'd
       var worldGeojson = null; // cached world map data
 
+      // One-time DOM inspector — fires 3s after load to show actual library structure
+      setTimeout(function() {
+        var se = document.querySelector('#hours');
+        if (se) {
+          var fronts = se.querySelectorAll('.tick-flip-panel-front');
+          var allEls = se.querySelectorAll('[class*="tick-flip"]');
+          console.log('[DOM] #hours fronts=' + fronts.length);
+          allEls.forEach(function(el, i) {
+            if (i < 20) {
+              var cs = window.getComputedStyle(el);
+              console.log('[DOM] ' + el.className + ' bgimg=' + cs.backgroundImage.substring(0,60) + ' vis=' + cs.visibility + ' opacity=' + cs.opacity + ' bgcolor=' + cs.backgroundColor);
+            }
+          });
+        }
+      }, 3000);
+
       // Apply inline background-image to all front panels in all sections.
       // Called after placeBird (for existing panels) and after tick.value via rAF
       // (for new panels the library creates during the flip animation).
@@ -583,6 +599,8 @@
           document.querySelectorAll('#' + sec + ' .tick-flip-panel-front').forEach(function(p) {
             if (imgUrl) {
               p.style.backgroundImage = "url('" + imgUrl + "')";
+              p.style.backgroundSize = 'cover';
+              p.style.backgroundPosition = 'center';
             } else {
               p.style.backgroundImage = '';
             }
