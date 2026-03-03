@@ -126,13 +126,7 @@
         visibility: hidden;
       }
 
-      /* Bird images applied via inline styles by applyAllImages() in JS */
-      #hours .tick-flip-panel-front,
-      #mins  .tick-flip-panel-front,
-      #secs  .tick-flip-panel-front {
-        background-size: cover;
-        background-position: center;
-      }
+      /* Bird photos are applied via .bird-photo img on .tick-flip-card (not the panel) */
 
       .tick-flip {
         border-radius: 0em !important;
@@ -620,25 +614,27 @@
         }
       }, 5000);
 
-      // Apply inline background-image to all front panels in all sections.
+      // Apply bird photo to .tick-flip-card (not the preserve-3d front panel).
+      // The card has only perspective:4em, no transform-style:preserve-3d, so
+      // z-index works normally and we can sit at z-index:3 above the panels.
       var _observing = false;
       function applyAllImages() {
         if (_observing) _imgObserver.disconnect();
         ['hours', 'mins', 'secs'].forEach(function(sec) {
           var imgUrl = sectionImages[sec];
-          var panels = document.querySelectorAll('#' + sec + ' .tick-flip-panel-front');
-          panels.forEach(function(p) {
-            var existing = p.querySelector('.bird-photo');
+          var cards = document.querySelectorAll('#' + sec + ' .tick-flip-card');
+          cards.forEach(function(card) {
+            var existing = card.querySelector('.bird-photo');
             if (imgUrl) {
               if (!existing) {
                 existing = document.createElement('img');
                 existing.className = 'bird-photo';
-                // translateZ(0.01px) pushes the img forward in the panel's preserve-3d
-                // context so it renders above all other panel children
-                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;pointer-events:none;display:block;transform:translateZ(0.01px);backface-visibility:hidden;';
-                existing.onload = function() { console.log('[img] loaded ' + sec + ' ' + this.naturalWidth + 'x' + this.naturalHeight); };
-                existing.onerror = function() { console.log('[img] ERROR loading ' + this.src.substring(0, 80)); };
-                p.appendChild(existing);
+                // z-index:3 puts us above front panel (z:2) and back panel (z:1).
+                // height:51% matches the front panel so image covers only the top half.
+                existing.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:51%;object-fit:cover;object-position:top;z-index:3;pointer-events:none;display:block;';
+                existing.onload = function() { console.log('[img] loaded ' + sec); };
+                existing.onerror = function() { console.log('[img] ERROR ' + this.src.substring(0, 80)); };
+                card.appendChild(existing);
               }
               if (existing.src !== imgUrl) existing.src = imgUrl;
             } else {
